@@ -10,10 +10,3 @@ function booleanize(b::Bool)
     return 0.0
   end
 end
-
-# Extend utf8() so that it can convert 1d arrays of strings too
-import Base.utf8
-function utf8(oldstring::Array{ASCIIString, 1})
-  newstring = reinterpret(UTF8String, oldstring)
-  return newstring
-end

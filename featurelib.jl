@@ -49,23 +49,14 @@ end
 # Our Features
 ############################################################
 
-function is_word(word::ASCIIString, i::Index, x::Array{ASCIIString, 1})
-  # Converts ascii arguments to explicit UTF8
-  return is_word(utf8(word), i, utf8(x))
-end
-
-function is_word(word::UTF8String, i::Index, x::Array{UTF8String, 1})
+function is_word{T <: String}(word::T, i::Index, x::Array{T, 1})
   # Is a specific word at position i?
   return booleanize(x[i] == word)
 end
 
 dictionary_template = FeatureTemplate(is_word, ["Graham", "Bill"])
 
-function is_tag(tag::Tag, i::Index, x::Array{ASCIIString}, yt, yt_before)
-  return is_tag(tag, i, utf8(x), yt, yt_before)
-end
-
-function is_tag(tag::Tag, i::Index, x::Array{UTF8String}, yt, yt_before)
+function is_tag{T <: String}(tag::Tag, i::Index, x::Array{T}, yt, yt_before)
   # Every possible tag at this position
   return booleanize(yt == tag)
 end
