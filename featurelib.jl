@@ -1,15 +1,8 @@
+include("util.jl")
 include("tags.jl")
 
-function booleanize(b::Bool)
-  if b
-    return 1
-  else
-    return 0
-  end
-end
-
 ##########################################
-# Features and Features Templates class
+# Features and Feature Templates class
 ##########################################
 
 # Feature Templates generate a bunch of features
@@ -18,6 +11,7 @@ type FeatureTemplate
   args::Array
 end
 
+# Features object holds all the feature templates
 type Features
   as::Array{FeatureTemplate}
   bs::Array{FeatureTemplate}
@@ -25,9 +19,9 @@ end
 
 type FeatureFunction
   a::Function
-  a_arg
+  a_index::Index
   b::Function
-  b_arg
+  b_index::Index
 end
 
 
@@ -42,7 +36,7 @@ end
 function num_features(templates::Array{FeatureTemplate})
   f = 0
   for template in templates
-    f += length(template)
+    f += num_features(template)
   end
   return f
 end
@@ -51,25 +45,35 @@ function num_features(features::Features)
   return num_features(features.as) * num_features(features.bs)
 end
 
-##############################################################
+############################################################
 # Our Features
-##############################################################
+############################################################
 
-function is_word(word::String, i::Int, x::Array{String})
+function is_word(word::ASCIIString, i::Index, x::Array{ASCIIString, 1})
+  # Converts ascii arguments to explicit UTF8
+  return is_word(utf8(word), i, utf8(x))
+end
+
+function is_word(word::UTF8String, i::Index, x::Array{UTF8String, 1})
   # Is a specific word at position i?
   return booleanize(x[i] == word)
 end
 
-template1 = FeatureTemplate(is_word, ["Graham", "Bill"])
+dictionary_template = FeatureTemplate(is_word, ["Graham", "Bill"])
 
-function is_tag(i::Int, x::Array{String}, yt, ytminusone)
-  # Every possible tag at this position
-  return booleanize(yt == SPACE)
+function is_tag(tag::Tag, i::Index, x::Array{ASCIIString}, yt, yt_before)
+  return is_tag(tag, i, utf8(x), yt, yt_before)
 end
 
-template2 = FeatureTemplate(is_tag, all_tags)
+function is_tag(tag::Tag, i::Index, x::Array{UTF8String}, yt, yt_before)
+  # Every possible tag at this position
+  return booleanize(yt == tag)
+end
 
-our_features = Features([template1], [template2])
+one_tag_template = FeatureTemplate(is_tag, all_tags)
+
+# All of our features in one convenient object
+our_features = Features([dictionary_template], [one_tag_template])
 
 
 
