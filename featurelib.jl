@@ -18,9 +18,9 @@ type Features
 end
 
 type FeatureFunction
-  a::Function
+  a::FeatureTemplate
   a_index::Index
-  b::Function
+  b::FeatureTemplate
   b_index::Index
 end
 
@@ -66,5 +66,12 @@ one_tag_template = FeatureTemplate(is_tag, all_tags)
 # All of our features in one convenient object
 our_features = Features([dictionary_template], [one_tag_template])
 
+function evaluate_feature(feature::FeatureFunction, i::Index, x::Array{T}, yt, yt_before)
+  a_arg = feature.a.args[feature.a_index]
+  b_arg = feature.b.args[feature.b_index]
+  a = feature.a.f(a_arg, i, x, yt, yt_before)
+  b = feature.b.f(b_arg, i, x, yt, yt_before)
+  return (a * b)
+end
 
 
