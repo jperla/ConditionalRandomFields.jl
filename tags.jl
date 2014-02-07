@@ -1,3 +1,5 @@
+typealias Tag Int64
+
 const START = 0
 const SPACE = 1
 const COMMA = 2
