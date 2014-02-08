@@ -1,5 +1,5 @@
 using Base.Test
-include("featurelib.jl")
+include("features.jl")
 
 test_sentence = ["Bill", "Graham", "is", "dead"]
 
@@ -9,6 +9,12 @@ test_sentence = ["Bill", "Graham", "is", "dead"]
 
 @test is_word("Graham", 1, test_sentence) == 0
 @test is_word("Graham", 2, test_sentence) == 1
+
+# Bill (word 1) has length 4; Graham (word 2) has length 6
+@test word_length(4, 1, test_sentence) == 1
+@test word_length(4, 2, test_sentence) == 0
+@test word_length(6, 1, test_sentence) == 0
+@test word_length(6, 2, test_sentence) == 1
 
 # Test is_tag feature function
 @test is_tag(SPACE, 1, test_sentence, SPACE, START) == 1
