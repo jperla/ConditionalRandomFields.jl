@@ -8,20 +8,62 @@ include("tags.jl")
 # Feature Templates generate a bunch of features
 type FeatureTemplate
   f::Function # Accepts one of the args below as first argument
-  args::Array
+  args::Vector
 end
 
 # Features object holds all the feature templates
-type Features
+type TemplatizedFeatures
   as::Array{FeatureTemplate}
   bs::Array{FeatureTemplate}
 end
 
-type FeatureFunction
-  a::FeatureTemplate
-  a_index::Index
-  b::FeatureTemplate
-  b_index::Index
+type IndexedFeatureTemplate
+  template::FeatureTemplate
+  index::Index
+end
+
+type Features
+  as::Array{IndexedFeatureTemplate}
+  bs::Array{IndexedFeatureTemplate}
+end
+
+function j_to_ab(j::Int, num_a::Int, num_b::Int)
+  a = j % num_a
+  b = div(j, num_a)
+  return a, b
+end
+
+function build_features(t::TemplatizedFeatures)
+  a_features = IndexedFeatureTemplate[]
+  b_features = IndexedFeatureTemplate[]
+  for template in t.as
+    for i = 1:num_features(template)
+      push!(a_features, IndexedFeatureTemplate(template, i))
+    end
+  end 
+
+  for template in t.bs
+    for i = 1:num_features(template)
+      push!(b_features, IndexedFeatureTemplate(template,i)) 
+    end
+  end 
+  return Features(a_features, b_features)
+end
+
+# Evaluating features
+function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureTemplate, i::Index, x::Array{T}, yt, yt_before)
+  template = indexed_feature_template.template
+  template_index = indexed_feature_template.index
+  return template.f(template.args[template_index], i, x, yt, yt_before)
+end
+
+function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt, yt_before)
+  ai, bi = j_to_ab(feature_j)
+  at = features.as[ai]
+  bt = features.bs[bi]
+  a = evaluate_feature(at, i, x, yt, yt_before)
+  b = evaluate_feature(bt, i, x, yt, yt_before)
+  return (a * b)
 end
 
 
@@ -33,6 +75,10 @@ function num_features(template::FeatureTemplate)
   return length(template.args)
 end
 
+function num_features(template::IndexedFeatureTemplate)
+  return length(template.template)
+end
+
 function num_features(templates::Array{FeatureTemplate})
   f = 0
   for template in templates
@@ -42,7 +88,7 @@ function num_features(templates::Array{FeatureTemplate})
 end
 
 function num_features(features::Features)
-  return num_features(features.as) * num_features(features.bs)
+  return length(features.as) * length(features.bs)
 end
 
 ############################################################
@@ -64,14 +110,8 @@ end
 one_tag_template = FeatureTemplate(is_tag, all_tags)
 
 # All of our features in one convenient object
-our_features = Features([dictionary_template], [one_tag_template])
-
-function evaluate_feature(feature::FeatureFunction, i::Index, x::Array{T}, yt, yt_before)
-  a_arg = feature.a.args[feature.a_index]
-  b_arg = feature.b.args[feature.b_index]
-  a = feature.a.f(a_arg, i, x, yt, yt_before)
-  b = feature.b.f(b_arg, i, x, yt, yt_before)
-  return (a * b)
-end
-
+our_a_templates = [dictionary_template]
+our_b_templates = [one_tag_template]
+our_templatized_features = TemplatizedFeatures(our_a_templates, our_b_templates)
+our_features = build_features(our_templatized_features)
 
