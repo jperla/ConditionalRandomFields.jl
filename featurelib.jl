@@ -6,6 +6,7 @@ include("util.jl")
 
 # Feature Templates generate a bunch of features
 type FeatureTemplate
+  description::String
   f::Function # Accepts one of the args below as first argument
   args::Vector
 end
@@ -26,34 +27,36 @@ type Features
   bs::Array{IndexedFeatureTemplate}
 end
 
-# Evaluating features
-function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureTemplate, i::Index, x::Array{T})
-  template = indexed_feature_template.template
-  template_index = indexed_feature_template.index
-  return template.f(template.args[template_index], i, x)
+# Indexed Feature Template and Features methods
+function arg(t::IndexedFeatureTemplate)
+  return t.template.args[t.index]
 end
 
-function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureTemplate, i::Index, x::Array{T}, yt, yt_before)
-  template = indexed_feature_template.template
-  template_index = indexed_feature_template.index
-  return template.f(template.args[template_index], i, x, yt, yt_before)
+function ab(features::Features, feature_j::Index)
+  # Returns 2-tuple of the first half of the feature (A)
+  # and the second half (B)
+  bi, ai = div_rem(feature_j - 1, length(features.as))
+  ai, bi = ai+1, bi+1
+  at = features.as[ai]
+  bt = features.bs[bi]
+  return at, bt
+end
+
+# Evaluating features
+
+function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T})
+  return t.template.f(arg(t), i, x)
+end
+
+function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T}, yt, yt_before)
+  return t.template.f(arg(t), i, x, yt, yt_before)
 end
 
 function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt, yt_before)
-  ai, bi = div_rem(feature_j, length(features.as))
-  at = features.as[ai]
-  bt = features.bs[bi]
+  at, bt = ab(features, feature_j)
   a = evaluate_feature(at, i, x)
   b = evaluate_feature(bt, i, x, yt, yt_before)
   return (a * b)
-end
-
-function div_rem(a::Int, b::Int)
-  # Divides a by b and returns a 2-tuple of the integer
-  # part and the remainder
-  r = 1 + (a % b)
-  i = 1 + div(a, b)
-  return i, r
 end
 
 # Build Features object from templates
@@ -96,4 +99,37 @@ end
 
 function num_features(features::Features)
   return length(features.as) * length(features.bs)
+end
+
+##############################################################
+# Descriptions of features for printing / debugging
+##############################################################
+
+function show(t::IndexedFeatureTemplate)
+  return replace(t.template.description, "%s", show(arg(t)))
+end
+
+function show(features::Features, feature_j::Index)
+  at, bt = ab(features, feature_j)
+  return string(show(at), " and ", show(bt))
+end
+
+function print_features{T <: String}(sentence::Vector{T}, features::Features)
+    for (i,w) in enumerate(sentence)
+        tag_before, tag = test_tags[i], test_tags[i+1]
+        word_features = Int[]
+        for feature_j in 1:num_features(features)
+            score = evaluate_feature(features, feature_j, i, test_sentence, tag, tag_before)
+            if score > 0
+                push!(word_features, feature_j)
+            end
+        end
+  
+        # now print out summary for each word in sentence
+        @printf("%s:", w)
+        for feature_j in word_features
+            @printf(" (%s)", show(features, feature_j))
+        end
+        @printf("\n")
+    end
 end

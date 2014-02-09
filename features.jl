@@ -20,9 +20,9 @@ function is_tag{T <: String}(tag::Tag, i::Index, x::Array{T}, yt, yt_before)
   return booleanize(yt == tag)
 end
 
-word_length_template = FeatureTemplate(word_length, [1, 2, 3, 4, 5, 6, 7, 8])
-dictionary_template = FeatureTemplate(is_word, ["Graham", "Bill"])
-one_tag_template = FeatureTemplate(is_tag, all_tags)
+word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
+dictionary_template = FeatureTemplate("word is \"%s\"", is_word, ["Graham", "Bill"])
+one_tag_template = FeatureTemplate("tag is %s", is_tag, all_tags)
 
 # All of our features in one convenient object
 our_a_templates = [dictionary_template]
