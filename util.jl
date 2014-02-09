@@ -20,6 +20,7 @@ function div_rem(a::Int, b::Int)
 end
 
 function show(a::ASCIIString)
-    # This should maybe be in 
+    # Why do i need this? 
+    # Otherwise, I get ERROR: no method show(ASCIIString)
     return a
 end
