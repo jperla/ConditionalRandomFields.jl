@@ -26,29 +26,6 @@ type Features
   bs::Array{IndexedFeatureTemplate}
 end
 
-function j_to_ab(j::Int, num_a::Int, num_b::Int)
-  a = j % num_a
-  b = div(j, num_a)
-  return a, b
-end
-
-function build_features(t::TemplatizedFeatures)
-  a_features = IndexedFeatureTemplate[]
-  b_features = IndexedFeatureTemplate[]
-  for template in t.as
-    for i = 1:num_features(template)
-      push!(a_features, IndexedFeatureTemplate(template, i))
-    end
-  end 
-
-  for template in t.bs
-    for i = 1:num_features(template)
-      push!(b_features, IndexedFeatureTemplate(template,i)) 
-    end
-  end 
-  return Features(a_features, b_features)
-end
-
 # Evaluating features
 function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureTemplate, i::Index, x::Array{T}, yt, yt_before)
   template = indexed_feature_template.template
@@ -65,6 +42,31 @@ function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::
   return (a * b)
 end
 
+function div_rem(a::Int, b::Int)
+  # Divides a by b and returns a 2-tuple of the integer
+  # part and the remainder
+  r = a % b
+  i = div(a, b)
+  return i, r
+end
+
+# Build Features object from templates
+function build_features(t::TemplatizedFeatures)
+  a_features = IndexedFeatureTemplate[]
+  b_features = IndexedFeatureTemplate[]
+  for template in t.as
+    for i = 1:num_features(template)
+      push!(a_features, IndexedFeatureTemplate(template, i))
+    end
+  end 
+
+  for template in t.bs
+    for i = 1:num_features(template)
+      push!(b_features, IndexedFeatureTemplate(template,i)) 
+    end
+  end 
+  return Features(a_features, b_features)
+end
 
 ##############################################################
 # Number of features in a template or list of FeatureTemplates
