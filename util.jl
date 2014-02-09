@@ -1,5 +1,5 @@
 # Use Index instead of specific numbers throughout the code
-typealias Index Integer
+typealias Index Int
 typealias Tag Int64
 
 # Convert a boolean to a 0/1 value for use in math

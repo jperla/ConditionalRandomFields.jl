@@ -27,6 +27,12 @@ type Features
 end
 
 # Evaluating features
+function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureTemplate, i::Index, x::Array{T})
+  template = indexed_feature_template.template
+  template_index = indexed_feature_template.index
+  return template.f(template.args[template_index], i, x)
+end
+
 function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureTemplate, i::Index, x::Array{T}, yt, yt_before)
   template = indexed_feature_template.template
   template_index = indexed_feature_template.index
@@ -34,10 +40,10 @@ function evaluate_feature{T <: String}(indexed_feature_template::IndexedFeatureT
 end
 
 function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt, yt_before)
-  ai, bi = j_to_ab(feature_j)
+  ai, bi = div_rem(feature_j, length(features.as))
   at = features.as[ai]
   bt = features.bs[bi]
-  a = evaluate_feature(at, i, x, yt, yt_before)
+  a = evaluate_feature(at, i, x)
   b = evaluate_feature(bt, i, x, yt, yt_before)
   return (a * b)
 end
@@ -45,8 +51,8 @@ end
 function div_rem(a::Int, b::Int)
   # Divides a by b and returns a 2-tuple of the integer
   # part and the remainder
-  r = a % b
-  i = div(a, b)
+  r = 1 + (a % b)
+  i = 1 + div(a, b)
   return i, r
 end
 
@@ -91,4 +97,3 @@ end
 function num_features(features::Features)
   return length(features.as) * length(features.bs)
 end
-

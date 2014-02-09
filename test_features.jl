@@ -22,7 +22,16 @@ test_sentence = ["Bill", "Graham", "is", "dead"]
 @test is_tag(SPACE, 4, test_sentence, QUESTION_MARK, SPACE) == 0
 @test is_tag(QUESTION_MARK, 4, test_sentence, QUESTION_MARK, SPACE) == 1
 
+word_length_template = FeatureTemplate(word_length, [1, 2, 3, 4, 5, 6, 7, 8])
+dictionary_template = FeatureTemplate(is_word, ["Graham", "Bill"])
+one_tag_template = FeatureTemplate(is_tag, all_tags)
+
+test_features = build_features(TemplatizedFeatures([dictionary_template], [one_tag_template]))
+
 # Test Features and the counter
 @test num_features(dictionary_template) == 2 # only bill and graham so far
 @test num_features(one_tag_template) == 7 # space, start, stop, etc...
-@test num_features(our_features) == 14 # 2 words * 7 tags
+@test num_features(test_features) == 14 # 2 words * 7 tags
+
+@test evaluate_feature(test_features, 2, 1, test_sentence, SPACE, START) == 1.0
+
