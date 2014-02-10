@@ -35,7 +35,7 @@ end
 function ab(features::Features, feature_j::Index)
   # Returns 2-tuple of the first half of the feature (A)
   # and the second half (B)
-  bi, ai = div_rem(feature_j - 1, length(features.as))
+  bi, ai = divrem(feature_j - 1, length(features.as))
   ai, bi = ai+1, bi+1
   at = features.as[ai]
   bt = features.bs[bi]

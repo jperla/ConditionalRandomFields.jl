@@ -11,14 +11,6 @@ function booleanize(b::Bool)
     end
 end
 
-function div_rem(a::Int, b::Int)
-    # Divides a by b and returns a 2-tuple of the integer
-    # part and the remainder
-    r = (a % b)
-    d = div(a, b)
-    return d, r
-end
-
 function show(a::ASCIIString)
     # Why do i need this? 
     # Otherwise, I get ERROR: no method show(ASCIIString)

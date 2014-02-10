@@ -21,7 +21,7 @@ function is_tag{T <: String}(tag::Tag, i::Index, x::Array{T}, yt, yt_before)
 end
 
 word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
-dictionary_template = FeatureTemplate("word is \"%s\"", is_word, ["Graham", "Bill"])
+dictionary_template = FeatureTemplate("word is \"%s\"", is_word, UTF8String["Graham", "Bill"])
 one_tag_template = FeatureTemplate("tag is %s", is_tag, all_tags)
 
 # All of our features in one convenient object
