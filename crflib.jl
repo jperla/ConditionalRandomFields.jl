@@ -1,3 +1,7 @@
+include("featurelib.jl")
+
+typealias Weight Float64
+
 abstract Classifier
 abstract ConditionalRandomFieldClassifier <: Classifier
 
@@ -12,4 +16,12 @@ function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Functio
         end
     end
     return n
+end
+
+function top_features(weights::Vector{Weight}, features::Features; n::Int=10)
+    top_weights = sort([(abs(w), w,j) for (j,w) in enumerate(weights)], rev=true)
+    for i in 1:n
+        _, w, feature_j = top_weights[i]
+        @printf("%s: %s\n", w, show(features, feature_j))
+    end
 end

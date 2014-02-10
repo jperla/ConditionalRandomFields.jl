@@ -11,7 +11,7 @@ include("util.jl")
 
 # Feature Templates generate a bunch of features
 type FeatureTemplate
-  description::String
+  description::String # Human readable description
   f::Function # Accepts one of the args below as first argument
   args::Vector
 end
@@ -70,7 +70,7 @@ end
 function evaluate_feature{T <: String}(features::Features, feature_j::Index, x_no_start::Vector{T}, y_no_start::Vector{Tag})
     # Calculates Feature_j over a whole sentence
     x = vcat(T[""], x_no_start)
-    y = vcat([START], y_no_start)
+    y::Vector{Tag} = vcat(Tag[START], y_no_start)
     assert(length(x) == length(y))
     sum = 0
     for i in 2:length(x)

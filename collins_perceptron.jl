@@ -5,9 +5,9 @@ using Logging
 Logging.configure(level=INFO)
 
 # TODO: Zach: make this not broken
-function viterbi{T <: String}(w::Vector{Float64}, features::Features, sentence::Vector{T})
+function viterbi{T <: String}(w::Vector{Weight}, features::Features, sentence::Vector{T})
     n = length(sentence)
-    labels = vcat(Tag[SPACE for i in 1:(n-1)], Tag[PERIOD])
+    labels::Vector{Tag} = vcat(Tag[SPACE for i in 1:(n-1)], Tag[PERIOD])
     assert(length(labels) == length(sentence))
     return labels
 end
@@ -23,7 +23,7 @@ type CollinsPerceptronCRF <: ConditionalRandomFieldClassifier
     features::Features
     n_iter::Int
     # calculated parameters:
-    w_::Vector{Float64}
+    w_::Vector{Weight}
 end
 # Defaults to w_ vector filled with num_features 0s
 CollinsPerceptronCRF(f::Features, n::Int) = CollinsPerceptronCRF(f, n, zeros(num_features(f)))

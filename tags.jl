@@ -1,4 +1,4 @@
-typealias Tag Int64
+typealias Tag Int8
 
 const START = 0
 const SPACE = 1
@@ -8,7 +8,7 @@ const QUESTION_MARK = 4
 const EXCLAMATION_POINT = 5
 const COLON = 6
 
-global all_tags = [START, SPACE, COMMA, PERIOD, QUESTION_MARK, EXCLAMATION_POINT, COLON]
+global all_tags = Tag[START, SPACE, COMMA, PERIOD, QUESTION_MARK, EXCLAMATION_POINT, COLON]
 
 function show(tag::Tag)
     if tag == START

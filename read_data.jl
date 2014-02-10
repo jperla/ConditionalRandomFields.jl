@@ -24,7 +24,7 @@ function training_sentence(i::Int)
     return truncate_empty_words_at_end(training_sentences[i,:])
 end
 
-function test_sentence(i)
+function test_sentence(i::Int)
     # Returns the ith test sentence
     return truncate_empty_words_at_end(test_sentences[i,:])
 end
