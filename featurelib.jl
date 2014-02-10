@@ -18,8 +18,8 @@ end
 
 # Features object holds all the feature templates
 type TemplatizedFeatures
-  as::Array{FeatureTemplate}
-  bs::Array{FeatureTemplate}
+  as::Vector{FeatureTemplate}
+  bs::Vector{FeatureTemplate}
 end
 
 type IndexedFeatureTemplate
@@ -28,8 +28,8 @@ type IndexedFeatureTemplate
 end
 
 type Features
-  as::Array{IndexedFeatureTemplate}
-  bs::Array{IndexedFeatureTemplate}
+  as::Vector{IndexedFeatureTemplate}
+  bs::Vector{IndexedFeatureTemplate}
 end
 
 # Indexed Feature Template and Features methods
@@ -49,17 +49,17 @@ end
 
 # Evaluating features
 
-function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T})
+function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Vector{T})
   # Calculates the A() part of Feature_j
   return t.template.f(arg(t), i, x)
 end
 
-function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
   # Calculates the B() part of Feature_j
   return t.template.f(arg(t), i, x, yt, yt_before)
 end
 
-function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
   # Calculates Feature_j for an individual word in a sentence
   at, bt = ab(features, feature_j)
   a = evaluate_feature(at, i, x)
@@ -67,7 +67,7 @@ function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::
   return (a * b)
 end
 
-function evaluate_feature{T <: String}(features::Features, feature_j::Index, x_no_start::Array{T}, y_no_start::Array{Tag})
+function evaluate_feature{T <: String}(features::Features, feature_j::Index, x_no_start::Vector{T}, y_no_start::Vector{Tag})
     # Calculates Feature_j over a whole sentence
     x = vcat(T[""], x_no_start)
     y = vcat([START], y_no_start)
@@ -109,7 +109,7 @@ function num_features(template::IndexedFeatureTemplate)
   return length(template.template)
 end
 
-function num_features(templates::Array{FeatureTemplate})
+function num_features(templates::Vector{FeatureTemplate})
   f = 0
   for template in templates
     f += num_features(template)
