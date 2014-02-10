@@ -1,3 +1,4 @@
+using Base.Test
 include("collins_perceptron.jl")
 include("features.jl")
 include("read_data.jl")

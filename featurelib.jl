@@ -2,6 +2,11 @@ include("util.jl")
 
 ##########################################
 # Features and Feature Templates class
+#
+# A feature is generated as a pair (A,B)
+# where the As and Bs are generated from
+# feature templates. Multiply every pair
+# possible of As and Bs.
 ##########################################
 
 # Feature Templates generate a bunch of features
@@ -45,18 +50,33 @@ end
 # Evaluating features
 
 function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T})
+  # Calculates the A() part of Feature_j
   return t.template.f(arg(t), i, x)
 end
 
 function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+  # Calculates the B() part of Feature_j
   return t.template.f(arg(t), i, x, yt, yt_before)
 end
 
 function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+  # Calculates Feature_j for an individual word in a sentence
   at, bt = ab(features, feature_j)
   a = evaluate_feature(at, i, x)
   b = evaluate_feature(bt, i, x, yt, yt_before)
   return (a * b)
+end
+
+function evaluate_feature{T <: String}(features::Features, feature_j::Index, x_no_start::Array{T}, y_no_start::Array{Tag})
+    # Calculates Feature_j over a whole sentence
+    x = vcat(T[""], x_no_start)
+    y = vcat([START], y_no_start)
+    assert(length(x) == length(y))
+    sum = 0
+    for i in 2:length(x)
+        sum += evaluate_feature(features, feature_j, i, x, y[i], y[i-1])
+    end
+    return sum
 end
 
 # Build Features object from templates
