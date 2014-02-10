@@ -6,20 +6,51 @@ include("tags.jl")
 ###########################################################
 
 
-m = length(all_tags)
-
 
 
 function predict_label{T <: String}(weights::Array{Float64}, features::Features, x::Array{T})
 
   ####################################################################################################
   #   Compute U(k,v) matrix
+  #
+  #    U(k,v)  = max over u of [ U(k-1, u) + gk(u,v) ]
   ####################################################################################################
-  n = length(x)
 
-  u_lookup = zeroes(n,m)
+  m = length(all_tags)
+  n = length(x)
+  s_lookup = zeros(n,m)
+
+
+  for i = 2:n
+
+    ############################################################################################################
+    #  take max
+    ############################################################################################################
+    for v = 1:m
+      max = 0
+      for u = 1:m
+        potential_s = s_lookup[i-1, u] + g_function(weights, features, i, x, yt=all_tags[v], yt_before=all_tags[u])
+        if potential_s > max
+          max = potential_s
+        end
+      end
+
+      s_lookup[i,v] = max
+
+    end
+
+  end
+
+  score = 0
+  for j = 1:m
+    if s_lookup[n,j] > score
+      score = s_lookup[n,j]
+    end
+  end
 
 end
+
+
 
 
 
