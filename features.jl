@@ -20,7 +20,7 @@ function is_tag{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt, yt_before)
   return booleanize(yt == tag)
 end
 
-function is_n_to_last_word(j::Index, i::Index, x::Vector{T})
+function is_n_to_last_word{T <: String}(j::Index, i::Index, x::Vector{T})
     return (length(x) - i) == j
 end
 
