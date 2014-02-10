@@ -1,4 +1,5 @@
 include("util.jl")
+include("tags.jl")
 
 ##########################################
 # Features and Feature Templates class

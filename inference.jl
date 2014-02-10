@@ -1,5 +1,4 @@
 include("featurelib.jl")
-include("tags.jl")
 
 ###########################################################
 #   viterbi for computing yhat over all possible labels
@@ -47,7 +46,7 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
   ###########################################################################################################
 
    best_score = 0
-   final tag = 0
+   final_tag = 0
     for j = 1:m
       if s_lookup[n,j] > score
         score = s_lookup[n,j]
@@ -58,17 +57,12 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
   ###########################################################################################################
   #   Retireve best label
   ###########################################################################################################
-
-
   best_label = [j]
   for i = n-1:-1:2
-
     prepend!(best_label, previous_tags[n-i, best_label[1]])
+  end
 
   return (best_score, best_label)
-
-
-
 end
 
 
@@ -85,7 +79,7 @@ function g_function{T <: String}(weights::Array{Float64}, features::Features, i:
 
 end
 
-function g_matrix(weights::Array{Float64}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+function g_matrix{T <: String}(weights::Array{Float64}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
 
   g_grid = zeros(m,m)
   for k in 1:m
