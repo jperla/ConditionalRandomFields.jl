@@ -18,7 +18,7 @@ function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Functio
     return n
 end
 
-function top_features(weights::Vector{Weight}, features::Features; n::Int=10)
+function top_features(features::Features, weights::Vector{Weight}; n::Int=10)
     top_weights = sort([(abs(w), w,j) for (j,w) in enumerate(weights)], rev=true)
     for i in 1:n
         _, w, feature_j = top_weights[i]
