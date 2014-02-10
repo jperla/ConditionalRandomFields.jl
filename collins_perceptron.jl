@@ -1,4 +1,4 @@
-include("features.jl")
+include("featurelib.jl")
 include("crflib.jl")
 
 using Logging

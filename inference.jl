@@ -1,4 +1,5 @@
 include("featurelib.jl")
+include("crflib.jl")
 
 ###########################################################
 #   viterbi for computing yhat over all possible labels
@@ -6,7 +7,7 @@ include("featurelib.jl")
 
 
 
-function predict_label{T <: String}(weights::Array{Float64}, features::Features, x::Array{T}, input_tags::Array{Int})
+function predict_label{T <: String}(weights::Array{Weight}, features::Features, x::Array{T}, input_tags::Array{Tag})
 
   ####################################################################################################
   #   Compute U(k,v) matrix
@@ -67,7 +68,7 @@ end
 
 
 
-function g_function{T <: String}(weights::Array{Float64}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+function g_function{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
 
   J = num_features(feature_function)
   g = 0
@@ -79,7 +80,7 @@ function g_function{T <: String}(weights::Array{Float64}, features::Features, i:
 
 end
 
-function g_matrix{T <: String}(weights::Array{Float64}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+function g_matrix{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
 
   g_grid = zeros(m,m)
   for k in 1:m

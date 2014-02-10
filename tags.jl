@@ -1,12 +1,12 @@
-typealias Tag Int8
+include("taglib.jl")
 
-const START = 0
-const SPACE = 1
-const COMMA = 2
-const PERIOD = 3
-const QUESTION_MARK = 4
-const EXCLAMATION_POINT = 5
-const COLON = 6
+START = convert(Tag, 0)
+SPACE = convert(Tag, 1)
+COMMA = convert(Tag, 2)
+PERIOD = convert(Tag, 3)
+QUESTION_MARK = convert(Tag, 4)
+EXCLAMATION_POINT = convert(Tag, 5)
+COLON = convert(Tag, 6)
 
 global all_tags = Tag[START, SPACE, COMMA, PERIOD, QUESTION_MARK, EXCLAMATION_POINT, COLON]
 
