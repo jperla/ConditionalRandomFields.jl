@@ -5,7 +5,7 @@ using Logging
 Logging.configure(level=INFO)
 
 # TODO: Zach: make this not broken
-function viterbi{T <: String}(w::Array{Float64}, features::Features, sentence::Array{T})
+function viterbi{T <: String}(w::Vector{Float64}, features::Features, sentence::Vector{T})
     n = length(sentence)
     labels = vcat(Tag[SPACE for i in 1:(n-1)], Tag[PERIOD])
     assert(length(labels) == length(sentence))
@@ -32,7 +32,7 @@ function num_features(crf::CollinsPerceptronCRF)
     return num_features(crf.features)
 end
 
-function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Array{T})
+function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector{T})
     predicted_label = viterbi(classifier.w_, classifier.features, sentence)
     return predicted_label
 end
