@@ -7,7 +7,6 @@ include("tags.jl")
 
 
 
-
 function predict_label{T <: String}(weights::Array{Float64}, features::Features, x::Array{T})
 
   ####################################################################################################
@@ -19,7 +18,7 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
   m = length(all_tags)
   n = length(x)
   s_lookup = zeros(n,m)
-
+  previous_tags = zeros(n,m)
 
   for i = 2:n
 
@@ -32,36 +31,37 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
         potential_s = s_lookup[i-1, u] + g_function(weights, features, i, x, yt=all_tags[v], yt_before=all_tags[u])
         if potential_s > max
           max = potential_s
+          tag_before = u
         end
       end
 
       s_lookup[i,v] = max
+      previous_tag[i,v] = tag_before
 
     end
 
   end
 
-  score = 0
-  for j = 1:m
-    if s_lookup[n,j] > score
-      score = s_lookup[n,j]
-    end
-  end
+  ###########################################################################################################
+  #   Retireve best score
+  ###########################################################################################################
+
+   best_score = 0
+    for j = 1:m
+      if s_lookup[n,j] > score
+        score = s_lookup[n,j]
+      end
+   end
+
+  ###########################################################################################################
+  #   Retireve best label
+  ###########################################################################################################
+
+  return (best_score, best_label)
 
 end
 
 
-
-
-
-# function z_normalization( x::Array(T), w::Array(Float) )
-
-#   #
-#   #   sum over all y
-#   #
-#   for y
-
-# end
 
 function g_function{T <: String}(weights::Array{Float64}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
 
