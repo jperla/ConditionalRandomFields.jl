@@ -1,6 +1,6 @@
 include("featurelib.jl")
 
-typealias Weight Float64
+typealias Weight Float64 # weights for each of the features
 
 abstract Classifier
 abstract ConditionalRandomFieldClassifier <: Classifier

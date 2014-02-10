@@ -2,7 +2,7 @@ using Base.Test
 include("features.jl")
 
 test_sentence = ["Bill", "Graham", "is", "dead"]
-test_tags = [START, SPACE, SPACE, SPACE, PERIOD]
+test_tags = Tag[START, SPACE, SPACE, SPACE, PERIOD]
 
 # Test is_word feature function
 @test is_word("Bill", 1, test_sentence) == 1

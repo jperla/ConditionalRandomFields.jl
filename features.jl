@@ -15,16 +15,16 @@ function is_word{T <: String}(word::T, i::Index, x::Vector{T})
   return booleanize(x[i] == word)
 end
 
-function is_tag{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt, yt_before)
+function is_tag{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
   # Every possible tag at this position
   return booleanize(yt == tag)
 end
 
-function is_n_to_last_word{T <: String}(j::Index, i::Index, x::Vector{T})
+function is_n_to_last_word{T <: String}(j::Int, i::Index, x::Vector{T})
     return (length(x) - i) == j
 end
 
-is_last_word_template = FeatureTemplate("is %s to last word", is_n_to_last_word, [0, 1, 2])
+is_last_word_template = FeatureTemplate("%s to last word", is_n_to_last_word, [0, 1, 2])
 word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
 dictionary_template = FeatureTemplate("word is \"%s\"", is_word, UTF8String["Graham", "Bill"])
 one_tag_template = FeatureTemplate("tag is %s", is_tag, all_tags)
