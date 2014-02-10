@@ -148,7 +148,7 @@ function print_features{T <: String}(sentence::Vector{T}, features::Features)
         # now print out summary for each word in sentence
         @printf("%s:", w)
         for feature_j in word_features
-            @printf(" (%s)", show(features, feature_j))
+            @printf(" (%s. %s)", feature_j, show(features, feature_j))
         end
         @printf("\n")
     end
