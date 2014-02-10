@@ -48,11 +48,11 @@ function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::A
   return t.template.f(arg(t), i, x)
 end
 
-function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T}, yt, yt_before)
+function evaluate_feature{T <: String}(t::IndexedFeatureTemplate, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
   return t.template.f(arg(t), i, x, yt, yt_before)
 end
 
-function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt, yt_before)
+function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
   at, bt = ab(features, feature_j)
   a = evaluate_feature(at, i, x)
   b = evaluate_feature(bt, i, x, yt, yt_before)
@@ -67,13 +67,13 @@ function build_features(t::TemplatizedFeatures)
     for i = 1:num_features(template)
       push!(a_features, IndexedFeatureTemplate(template, i))
     end
-  end 
+  end
 
   for template in t.bs
     for i = 1:num_features(template)
-      push!(b_features, IndexedFeatureTemplate(template,i)) 
+      push!(b_features, IndexedFeatureTemplate(template,i))
     end
-  end 
+  end
   return Features(a_features, b_features)
 end
 
@@ -124,7 +124,7 @@ function print_features{T <: String}(sentence::Vector{T}, features::Features)
                 push!(word_features, feature_j)
             end
         end
-  
+
         # now print out summary for each word in sentence
         @printf("%s:", w)
         for feature_j in word_features
