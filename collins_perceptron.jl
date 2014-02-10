@@ -25,6 +25,8 @@ type CollinsPerceptronCRF <: ConditionalRandomFieldClassifier
     # calculated parameters:
     w_::Vector{Float64}
 end
+# Defaults to w_ vector filled with num_features 0s
+CollinsPerceptronCRF(f::Features, n::Int) = CollinsPerceptronCRF(f, n, zeros(num_features(f)))
 
 function num_features(crf::CollinsPerceptronCRF)
     return num_features(crf.features)
@@ -50,6 +52,7 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
             end
         end
 
+        # Debugging: should improve after each epoch
         n = num_correct_labels(crf, data, labels, N)
         info("epoch $iter: $n / $N")
     end
