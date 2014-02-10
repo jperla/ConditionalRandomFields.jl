@@ -36,7 +36,7 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
       end
 
       s_lookup[i,v] = max
-      previous_tag[i,v] = tag_before
+      previous_tags[i,v] = tag_before
 
     end
 
@@ -47,9 +47,11 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
   ###########################################################################################################
 
    best_score = 0
+   final tag = 0
     for j = 1:m
       if s_lookup[n,j] > score
         score = s_lookup[n,j]
+        final_tag = j
       end
    end
 
@@ -57,7 +59,15 @@ function predict_label{T <: String}(weights::Array{Float64}, features::Features,
   #   Retireve best label
   ###########################################################################################################
 
+
+  best_label = [j]
+  for i = n-1:-1:2
+
+    prepend!(best_label, previous_tags[n-i, best_label[1]])
+
   return (best_score, best_label)
+
+
 
 end
 
