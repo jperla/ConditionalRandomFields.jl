@@ -4,13 +4,7 @@ include("inference.jl")
 import Logging: info, INFO
 Logging.configure(level=INFO)
 
-# TODO: Zach: make this not broken
-# function predict_label{T <: String}(w::Vector{Weight}, features::Features, sentence::Vector{T}, tags::Array{Tag})
-#     n = length(sentence)
-#     labels::Vector{Tag} = vcat(Tag[SPACE for i in 1:(n-1)], Tag[PERIOD])
-#     assert(length(labels) == length(sentence))
-#     return labels
-# end
+
 
 ####################################################################
 # Collins Perceptron Algorithm for Approximating Training of CRFs

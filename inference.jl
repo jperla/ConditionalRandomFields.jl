@@ -7,25 +7,25 @@ include("tags.jl")
 ###########################################################
 
 
-function best_label(last_tag, previous_tags::Array{Float64, 2})
+function best_label(last_tag, previous_tags::Array{Int64, 2})
 
   #debug code
   println("$previous_tags")
 
   (n,m) = size(previous_tags)
-   
+
   result = Array{Tag}
   prepend!(result, [last_tag])
   tag_to_add = last_tag
 
-  
+
   println("n: $n, m: $m")
-  
+
   for i = 1:n
     ind = n-i+1
     result = prepend!(result, [SPACE])
    end
-  
+
   return result
 end
 
@@ -73,7 +73,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
         end
 
         potential_s = base + g_function(weights, features, k, x, input_tags[v], yt_before)
-        
+
         if potential_s > max
           max = potential_s
           prev_tag = yt_before
