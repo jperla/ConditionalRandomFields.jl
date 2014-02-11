@@ -55,6 +55,8 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
 
         # Debugging: should improve after each epoch
         n = num_correct_labels(crf, data, labels, N)
+        t = percent_correct_tags(crf, data, labels, N)
+
         info("epoch $iter: $n / $N")
     end
 end

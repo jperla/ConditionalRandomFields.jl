@@ -32,7 +32,7 @@ function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Funct
         label_length = length(true_label)
         for k = 1:label_length
 
-            if true_label == predicted_label
+            if true_label[k] == predicted_label[k]
               correct_tags += 1
             end
             total_tags += 1
