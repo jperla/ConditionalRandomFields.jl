@@ -6,6 +6,18 @@ include("crflib.jl")
 ###########################################################
 
 
+function best_label(last_tag, previous_tags::Array{Float64, 2})
+
+  result = [last_tag]
+
+  tag_to_add = last_tag
+  for i = n:-1:1
+    tag_to_add = previous_tags[i, last_tag]
+    prepend!(result, last_tag)
+
+  end
+end
+
 
 function predict_label{T <: String}(weights::Array{Weight}, features::Features, x::Array{T}, input_tags::Array{Tag})
 
@@ -61,15 +73,6 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
 
 end
 
-function best_label(last_tag, previous_tags::Array{Float64, 2})
-
-  best_label = [last_tag]
-
-  prepend!(best_label, previous_tags[n, last_tag])
-  for n:-1:1
-
-  end
-end
 
 
 
