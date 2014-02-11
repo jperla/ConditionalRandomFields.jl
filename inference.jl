@@ -29,6 +29,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
   s_lookup = zeros(n,m)
   previous_tags = zeros(n,m)
 
+  tag_before = 1
 
   for k = 1:n
     ######################################################################
@@ -41,19 +42,14 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
 
       for u = 1:m
 
-        #initialize tag before
-        tag_before = 1
-
         if k == 1
           yt_before = START
-        else
-          yt_before = input_tags[u]
-        end
-        if k == 1
           base = 0
         else
+          yt_before = input_tags[u]
           base = s_lookup[k-1, u]
         end
+
         potential_s = base + g_function(weights, features, k, x, input_tags[v], yt_before)
         if potential_s > max
           max = potential_s
