@@ -1,7 +1,7 @@
 include("crflib.jl")
 include("inference.jl")
 
-using Logging
+import Logging: info, INFO
 Logging.configure(level=INFO)
 
 # TODO: Zach: make this not broken
