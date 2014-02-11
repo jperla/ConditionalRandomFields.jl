@@ -1,14 +1,23 @@
 include("taglib.jl")
 
-START = convert(Tag, 0)
-SPACE = convert(Tag, 1)
-COMMA = convert(Tag, 2)
-PERIOD = convert(Tag, 3)
+START = convert(Tag, 50)
+SPACE = convert(Tag, 78)
+COMMA = convert(Tag, 20)
+PERIOD = convert(Tag, 39)
 QUESTION_MARK = convert(Tag, 4)
 EXCLAMATION_POINT = convert(Tag, 5)
 COLON = convert(Tag, 6)
 
 global all_tags = Tag[START, SPACE, COMMA, PERIOD, QUESTION_MARK, EXCLAMATION_POINT, COLON]
+
+function indices(tags::Array{Tag})
+    # Returns map Tag => index in tags array input
+    vk = Dict()
+    for i in 1:length(tags)
+      vk[tags[i]] = i
+    end
+    return vk
+end
 
 function show(tag::Tag)
     if tag == START
