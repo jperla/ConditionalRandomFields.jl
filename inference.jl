@@ -1,4 +1,4 @@
-include("featurelib.jl")
+include("features.jl")
 include("crflib.jl")
 
 ###########################################################
