@@ -41,12 +41,12 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
       end
       max = 0
       for u = 1:m
-        if k = 1
+        if k == 1
           yt_before = START
         else
           yt_before = input_tags[u]
         end
-        if k = 1
+        if k == 1
           base = 0
         else
           base = s_lookup[]
