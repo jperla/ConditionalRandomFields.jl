@@ -38,6 +38,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
 
 
       max = 0
+      yt_before = 0
       for u = 1:m
         if k == 1
           yt_before = START
