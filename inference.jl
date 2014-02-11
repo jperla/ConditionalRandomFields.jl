@@ -9,56 +9,70 @@ include("crflib.jl")
 
 function predict_label{T <: String}(weights::Array{Weight}, features::Features, x::Array{T}, input_tags::Array{Tag})
 
-  ##############################################################################
+  ##########################################################################
   #   Compute U(k,v) matrix   U(k,v)  = max over u of [ U(k-1, u) + gk(u,v) ]
-  ###############################################################################
+  ##########################################################################
   m = length(input_tags)
   n = length(x)
   s_lookup = zeros(n,m)
   previous_tags = zeros(n,m)
 
-  for i = 2:n
-    #############################################################################
+  
+
+  for k = 2:n
+    ######################################################################
     #  take max
-    ############################################################################
+    #######################################################################
     for v = 1:m
+    
       max = 0
       tag_before = all_tags[1] # initialize
       for u = 1:m
-        potential_s = s_lookup[i-1, u] + g_function(weights, features, i, x, input_tags[v], input_tags[u])
+        potential_s = s_lookup[k-1, u] + g_function(weights, features, k, x, input_tags[v], input_tags[u])
         if potential_s > max
           max = potential_s
           tag_before = u
         end
       end
-      s_lookup[i,v] = max
-      previous_tags[i,v] = tag_before
+      println("max_score: $max")
+      s_lookup[k,v] = max
+      previous_tags[k,v] = tag_before
+      println("tag before: $tag_before")
     end
   end
 
-  ##############################################################################
+  #########################################################################
   #   Retireve best score
-  ##############################################################################
+  ##########################################################################
   best_score = 0
   final_tag = 0
   for j = 1:m
     if s_lookup[n,j] > best_score
-      best_score = s_lookup[n,j]
+     best_score = s_lookup[n,j]
       final_tag = j
     end
   end
 
-  ########################################################################
-  #   Retrieve best label
-  ########################################################################
-  # best_label = [final_tag]
-  # for i = n-1:-1:2
-  #   prepend!(best_label, previous_tags[n-i, best_label[1]])
+  #######################################################################
+  #  Retrieve best label
+  #######################################################################
+  # best_label = Int64[final_tag]
+  # for i = 2:n
+  #   prepend!(best_label, previous_tags[n-i+2,best_label[1]])
   # end
+  
+  println("$previous_tags")
+  
+  #debug
+  println("n: $n, m: $m, final tag: $final_tag")
+  
+  
   best_label = Tag[]
-  for i = 1:n
+  for i = 1:n-1
     push!(best_label, SPACE)
   end
+  push!(best_label, PERIOD)
+  
   return best_label
   
 end
