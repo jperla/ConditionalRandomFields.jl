@@ -10,18 +10,14 @@ include("crflib.jl")
 function predict_label{T <: String}(weights::Array{Weight}, features::Features, x::Array{T}, input_tags::Array{Tag})
 
   ####################################################################################################
-  #   Compute U(k,v) matrix
-  #
-  #    U(k,v)  = max over u of [ U(k-1, u) + gk(u,v) ]
+  #   Compute U(k,v) matrix   U(k,v)  = max over u of [ U(k-1, u) + gk(u,v) ]
   ####################################################################################################
-
   m = length(input_tags)
   n = length(x)
   s_lookup = zeros(n,m)
   previous_tags = zeros(n,m)
 
   for i = 2:n
-
     ############################################################################################################
     #  take max
     ############################################################################################################
@@ -34,26 +30,22 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
           tag_before = u
         end
       end
-
       s_lookup[i,v] = max
       previous_tags[i,v] = tag_before
-
     end
-
   end
 
   ###########################################################################################################
   #   Retireve best score
   ###########################################################################################################
-
-   best_score = 0
-   final_tag = 0
-    for j = 1:m
-      if s_lookup[n,j] > score
-        score = s_lookup[n,j]
-        final_tag = j
-      end
-   end
+  best_score = 0
+  final_tag = 0
+  for j = 1:m
+    if s_lookup[n,j] > score
+      score = s_lookup[n,j]
+      final_tag = j
+    end
+  end
 
   ###########################################################################################################
   #   Retireve best label

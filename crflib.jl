@@ -20,8 +20,6 @@ end
 
 function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Function, labels::Function, N::Int)
 
-
-
     # Calculate the number of sentences the CRF correctly labels
     correct_tags = 0
     total_tags = 0

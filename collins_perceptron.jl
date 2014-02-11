@@ -1,15 +1,16 @@
 include("crflib.jl")
+include("inference.jl")
 
 using Logging
 Logging.configure(level=INFO)
 
 # TODO: Zach: make this not broken
-function viterbi{T <: String}(w::Vector{Weight}, features::Features, sentence::Vector{T})
-    n = length(sentence)
-    labels::Vector{Tag} = vcat(Tag[SPACE for i in 1:(n-1)], Tag[PERIOD])
-    assert(length(labels) == length(sentence))
-    return labels
-end
+# function predict_label{T <: String}(w::Vector{Weight}, features::Features, sentence::Vector{T})
+#     n = length(sentence)
+#     labels::Vector{Tag} = vcat(Tag[SPACE for i in 1:(n-1)], Tag[PERIOD])
+#     assert(length(labels) == length(sentence))
+#     return labels
+# end
 
 ####################################################################
 # Collins Perceptron Algorithm for Approximating Training of CRFs
@@ -33,7 +34,7 @@ function num_features(crf::CollinsPerceptronCRF)
 end
 
 function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector{T})
-    predicted_label = viterbi(classifier.w_, classifier.features, sentence)
+    predicted_label = predict_label(classifier.w_, classifier.features, sentence)
     return predicted_label
 end
 
