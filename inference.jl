@@ -2,58 +2,58 @@ include("features.jl")
 include("crflib.jl")
 include("tags.jl")
 
+import Logging: info, INFO
+Logging.configure(level=INFO)
+
 ###########################################################
 #   viterbi for computing yhat over all possible labels
 ###########################################################
 
-
-function best_label(last_tag, previous_tags::Array{Int64, 2})
-
+function best_label(last_tag, previous_tags::Array{Tag, 2})
   #debug code
-  println("$previous_tags")
+  info("previous tags: $previous_tags")
 
-  (n,m) = size(previous_tags)
+  (n, m) = size(previous_tags)
 
-  result = Array{Tag}
+  result = Tag[]
   prepend!(result, [last_tag])
   tag_to_add = last_tag
 
+  info("n: $n, m: $m")
 
-  println("n: $n, m: $m")
-
-  for i = 1:n
-    ind = n-i+1
-    result = prepend!(result, [SPACE])
+  for i = 1:n-1
+    # TODO: Zach: what is ind for?
+    ind = n - i + 1
+    result = prepend!(result, Tag[SPACE])
    end
 
   return result
 end
 
 
-function best_last_label(s_lookup::Array{Float64,2})
+function best_last_tag(s_lookup::Array{Weight,2})
   (n,m) = size(s_lookup)
   max = 0
   best_last = 0
   for i = 1:m
-    if s_lookup[n,i] > max
-      max = s_lookup[n,i]
+    if s_lookup[n, i] > max
+      max = s_lookup[n, i]
       best_last = i
     end
   end
-  println("$best_last")
+  info("best last: $best_last")
   return best_last
 end
 
 
 function predict_label{T <: String}(weights::Array{Weight}, features::Features, x::Array{T}, input_tags::Array{Tag})
-
   ##########################################################################
   #   Compute U(k,v) matrix   U(k,v)  = max over u of [ U(k-1, u) + gk(u,v) ]
   ##########################################################################
   m = length(input_tags)
   n = length(x)
-  s_lookup = zeros(n,m)
-  previous_tags = zeros(n,m)
+  s_lookup = zeros(n, m)
+  previous_tags = Array(Tag, n, m)
 
   for k = 1:n
     ######################################################################
@@ -80,21 +80,19 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
         end
       end
 
-      println("max_score: $max")
-      s_lookup[k,v] = max
-      println("tag before: $prev_tag")
+      info("max_score: $max")
+      s_lookup[k, v] = max
+      info("tag before: $prev_tag")
     end
   end
 
-  last_tag = best_last_label(s_lookup)
-  return best_label(last_tag, previous_tags)
-
+  last_tag = best_last_tag(s_lookup)
+  best = best_label(last_tag, previous_tags)
+  info("best length: $(length(best))  input: $(length(x)) n: $n") 
+  return best
 end
 
-
-
 function g_function{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
-
   J = num_features(features)
   g = 0
 
@@ -102,11 +100,9 @@ function g_function{T <: String}(weights::Array{Weight}, features::Features, i::
     g += weights[j] * evaluate_feature(features, j, i, x, yt, yt_before )
   end
   return g
-
 end
 
 function g_matrix{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
-
   g_grid = zeros(m,m)
   for k in 1:m
     for l in 1:m
@@ -115,7 +111,4 @@ function g_matrix{T <: String}(weights::Array{Weight}, features::Features, i::In
   end
   return g_grid
 end
-
-
-
 

@@ -4,8 +4,6 @@ include("inference.jl")
 import Logging: info, INFO
 Logging.configure(level=INFO)
 
-
-
 ####################################################################
 # Collins Perceptron Algorithm for Approximating Training of CRFs
 #
