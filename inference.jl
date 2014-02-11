@@ -8,8 +8,10 @@ include("crflib.jl")
 
 function best_label(last_tag, previous_tags::Array{Float64, 2})
 
-  result = [last_tag]
 
+  n = size(previous_tags)[1]
+
+  result = [last_tag]
   tag_to_add = last_tag
   for i = n:-1:1
     tag_to_add = previous_tags[i, last_tag]
@@ -56,6 +58,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
           tag_before = u
         end
       end
+
       println("max_score: $max")
       s_lookup[k,v] = max
       previous_tags[k,v] = tag_before
@@ -63,10 +66,23 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
     end
   end
 
+  last_tag = best_last(s_lookup)
   return best_label(last_tag, previous_tags)
 
 end
 
+function best_last_label(s_lookup::Array{Float64})
+  (n,m) = size(s_lookup)
+  max = 0
+  best_last = 0
+  for i = 1:m
+    if s_lookup[n,i] > max
+      max = s_lookup[n,i]
+      best_last = i
+    end
+  end
+  return best_last
+end
 
 
 function g_function{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
