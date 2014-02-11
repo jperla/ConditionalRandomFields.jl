@@ -38,8 +38,12 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
 
 
       max = 0
-      yt_before = 0
+
       for u = 1:m
+
+        #initialize tag before
+        tag_before = 1
+
         if k == 1
           yt_before = START
         else
@@ -58,7 +62,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
       end
       println("max_score: $max")
       s_lookup[k,v] = max
-      previous_tags[k,v] = yt_before
+      previous_tags[k,v] = tag_before
       println("tag before: $tag_before")
     end
   end
