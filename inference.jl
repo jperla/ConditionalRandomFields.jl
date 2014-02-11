@@ -30,17 +30,15 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
   previous_tags = zeros(n,m)
 
 
-
   for k = 1:n
     ######################################################################
     #  take max
     #######################################################################
     for v = 1:m
 
-      if k = 1
+      if k == 1
         yt_before = START
       end
-
       max = 0
       for u = 1:m
         if k = 1
