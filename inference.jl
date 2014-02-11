@@ -1,5 +1,6 @@
 include("features.jl")
 include("crflib.jl")
+include("tags.jl")
 
 ###########################################################
 #   viterbi for computing yhat over all possible labels
@@ -8,16 +9,39 @@ include("crflib.jl")
 
 function best_label(last_tag, previous_tags::Array{Float64, 2})
 
+  #debug code
+  println("$previous_tags")
 
-  n = size(previous_tags)[1]
-
-  result = [last_tag]
+  (n,m) = size(previous_tags)
+   
+  result = Array{Tag}
+  prepend!(result, [last_tag])
   tag_to_add = last_tag
-  for i = n:-1:1
-    tag_to_add = previous_tags[i, last_tag]
-    prepend!(result, last_tag)
 
+  
+  println("n: $n, m: $m")
+  
+  for i = 1:n
+    ind = n-i+1
+    result = prepend!(result, [SPACE])
+   end
+  
+  return result
+end
+
+
+function best_last_label(s_lookup::Array{Float64,2})
+  (n,m) = size(s_lookup)
+  max = 0
+  best_last = 0
+  for i = 1:m
+    if s_lookup[n,i] > max
+      max = s_lookup[n,i]
+      best_last = i
+    end
   end
+  println("$best_last")
+  return best_last
 end
 
 
@@ -31,17 +55,13 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
   s_lookup = zeros(n,m)
   previous_tags = zeros(n,m)
 
-  tag_before = 1
-
   for k = 1:n
     ######################################################################
     #  take max
     #######################################################################
     for v = 1:m
-
-
+      prev_tag = 0
       max = 0
-
       for u = 1:m
 
         if k == 1
@@ -53,36 +73,24 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
         end
 
         potential_s = base + g_function(weights, features, k, x, input_tags[v], yt_before)
+        
         if potential_s > max
           max = potential_s
-          tag_before = u
+          prev_tag = yt_before
         end
       end
 
       println("max_score: $max")
       s_lookup[k,v] = max
-      previous_tags[k,v] = tag_before
-      println("tag before: $tag_before")
+      println("tag before: $prev_tag")
     end
   end
 
-  last_tag = best_last(s_lookup)
+  last_tag = best_last_label(s_lookup)
   return best_label(last_tag, previous_tags)
 
 end
 
-function best_last_label(s_lookup::Array{Float64})
-  (n,m) = size(s_lookup)
-  max = 0
-  best_last = 0
-  for i = 1:m
-    if s_lookup[n,i] > max
-      max = s_lookup[n,i]
-      best_last = i
-    end
-  end
-  return best_last
-end
 
 
 function g_function{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
