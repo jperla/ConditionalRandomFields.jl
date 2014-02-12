@@ -34,15 +34,24 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
     # Data and Labels are functions which take a single integer argument in (1,N)
     J = num_features(crf)
     crf.w_ = zeros(J) # re-initialize to 0 for every fit
+
     for iter in 1:crf.n_iter
+        t = percent_correct_tags(crf, data, labels, N, tags)
+        info("epoch $iter: percent correct tags: $t")
+	top_features(crf.features, crf.w_, n=10)
+
         for i in 1:N
+	    if (i % 10) == 1
+                info("example $i")
+            end
             x, true_label = data(i), labels(i)
-            info("example $i")
             predicted_label = predict(crf, x, tags)
-            for j in 1:J
-                predictedF = evaluate_feature(crf.features, j, x, predicted_label)
-                trueF = evaluate_feature(crf.features, j, x, true_label)
-                crf.w_[j] = crf.w_[j] + trueF - predictedF
+	    if predicted_label != true_label
+                for j in 1:J
+                    predictedF = evaluate_feature(crf.features, j, x, predicted_label)
+                    trueF = evaluate_feature(crf.features, j, x, true_label)
+                    crf.w_[j] = crf.w_[j] + trueF - predictedF
+                end
             end
         end
 
@@ -51,6 +60,7 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
         t = percent_correct_tags(crf, data, labels, N, tags)
 
         info("epoch $iter: percent correct tags: $t")
+	top_features(crf.features, crf.w_, n=10)
 
     end
 end

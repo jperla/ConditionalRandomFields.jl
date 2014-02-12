@@ -16,6 +16,12 @@ function show(a::ASCIIString)
     return a
 end
 
+function show(a::UTF8String)
+    # Why do i need this? 
+    # Otherwise, I get ERROR: no method show(ASCIIString)
+    return a
+end
+
 function show(a::Index)
     return string(a)
 end

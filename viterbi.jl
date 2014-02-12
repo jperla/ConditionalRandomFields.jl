@@ -89,7 +89,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
       # println("$s_lookup")
       # println("previous_tag")
       # print("$previous_tags")
-      debug("tag before: $prev_tag")
+      # debug("tag before: $prev_tag")
     end
   end
 

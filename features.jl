@@ -24,13 +24,19 @@ function is_n_to_last_word{T <: String}(j::Int, i::Index, x::Vector{T})
     return (length(x) - i) == j
 end
 
+function first_word_is{T <: String}(word::T, i::Index, x::Vector{T})
+    return (i == 1) && (lowercase(x[1]) == word)
+end
+
 is_last_word_template = FeatureTemplate("%s to last word", is_n_to_last_word, [0, 1, 2])
 word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
 dictionary_template = FeatureTemplate("word is \"%s\"", is_word, UTF8String["Graham", "Bill"])
+first_word_is_template = FeatureTemplate("first word is %s", first_word_is, UTF8String["what", "who", "when", "where", "how"])
+
 one_tag_template = FeatureTemplate("tag is %s", is_tag, all_tags)
 
 # All of our features in one convenient object
-our_a_templates = [dictionary_template, is_last_word_template, word_length_template]
+our_a_templates = [dictionary_template, is_last_word_template, word_length_template, first_word_is_template]
 our_b_templates = [one_tag_template]
 our_templatized_features = TemplatizedFeatures(our_a_templates, our_b_templates)
 our_features = build_features(our_templatized_features)
