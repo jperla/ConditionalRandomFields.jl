@@ -77,3 +77,9 @@ our_b_templates = [one_tag_template, two_tag_template]
 our_templatized_features = TemplatizedFeatures(our_a_templates, our_b_templates)
 our_features = build_features(our_templatized_features)
 
+# A small, useful subset of features
+some_a_templates = [one_template, word_ends_with_template, is_last_word_template]
+some_b_templates = [one_tag_template]
+some_templatized_features = TemplatizedFeatures(some_a_templates, some_b_templates)
+some_features = build_features(some_templatized_features)
+
