@@ -1,8 +1,8 @@
 using Base.Test
 include("features.jl")
 
-test_sentence = ["", "Bill", "Graham", "is", "dead"]
-test_tags = Tag[START, SPACE, SPACE, SPACE, PERIOD]
+test_sentence = [ "Bill", "Graham", "is", "dead"]
+test_tags = Tag[SPACE, SPACE, SPACE, PERIOD]
 
 # Test is_word feature function
 @test is_word("Bill", 1, test_sentence) == 1
@@ -35,4 +35,4 @@ test_features = build_features(TemplatizedFeatures([dictionary_template], [one_t
 
 @test evaluate_feature(test_features, 6, 1, test_sentence, SPACE, START) == 1.0
 
-print_features(test_sentence, test_features)
+print_features(test_sentence, test_tags, test_features)

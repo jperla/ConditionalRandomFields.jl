@@ -1,6 +1,5 @@
 include("taglib.jl")
 
-START = convert(Tag, 50)
 SPACE = convert(Tag, 78)
 COMMA = convert(Tag, 20)
 PERIOD = convert(Tag, 39)

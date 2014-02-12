@@ -135,9 +135,10 @@ function show(features::Features, feature_j::Index)
   return string(show(at), " and ", show(bt))
 end
 
-function print_features{T <: String}(sentence::Vector{T}, features::Features)
+function print_features{T <: String}(sentence::Vector{T}, label::Vector{Tag}, features::Features)
+    tags = prepend!([START], label)
     for (i,w) in enumerate(sentence)
-        tag_before, tag = test_tags[i], test_tags[i+1]
+        tag_before, tag = tags[i], tags[i+1]
         word_features = Int[]
         for feature_j in 1:num_features(features)
             score = evaluate_feature(features, feature_j, i, test_sentence, tag, tag_before)
