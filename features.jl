@@ -1,5 +1,5 @@
-include("tags.jl")
-include("featurelib.jl")
+require("tags.jl")
+require("featurelib.jl")
 
 ############################################################
 # Our Standard Features

@@ -1,4 +1,4 @@
-include("taglib.jl")
+require("taglib.jl")
 
 START = convert(Tag, 50)
 SPACE = convert(Tag, 78)

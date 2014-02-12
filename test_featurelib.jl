@@ -1,5 +1,5 @@
 using Base.Test
-include("features.jl")
+require("features.jl")
 
 ###############################################################
 #   Test evaluate_feature

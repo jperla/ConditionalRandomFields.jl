@@ -1,5 +1,5 @@
-include("util.jl")
-include("taglib.jl")
+require("util.jl")
+require("taglib.jl")
 
 ##########################################
 # Features and Feature Templates class

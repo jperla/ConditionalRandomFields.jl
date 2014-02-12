@@ -1,5 +1,5 @@
 using Base.Test
-include("read_data.jl")
+require("read_data.jl")
 
 @test length(truncate_empty_words_at_end(["This", "", ""])) == 1
 @test length(truncate_empty_words_at_end(["This", "should", "be", "shorter", "", "", ""])) == 4
