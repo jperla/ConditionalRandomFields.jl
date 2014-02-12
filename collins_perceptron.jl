@@ -31,6 +31,40 @@ function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector
     return predicted_label
 end
 
+function compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x::Array{T}, true_label::Array{Tag}, predicted_label::Array{Tag})
+    J = num_features(crf)
+    new_weights = zeros(J)
+    for j in 1:J
+        predictedF = evaluate_feature(crf.features, j, x, predicted_label)
+        trueF = evaluate_feature(crf.features, j, x, true_label)
+        new_weights[j] = trueF - predictedF
+    end
+    return crf.w_ + new_weights
+end
+
+function parallel_compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x::Array{T}, true_label::Array{Tag}, predicted_label::Array{Tag})
+    J = num_features(crf)
+
+    function sparse_merge(z::Array{Float64}, a)
+        z[a[1]] = a[2]
+        z
+    end
+
+    function sparse_merge(a, b)
+        z = zeros(Float64, J)
+        z[a[1]] = a[2]
+        z[b[1]] = b[2]
+        z
+    end
+
+    new_weights = @parallel sparse_merge for j in 1:J
+        predictedF = evaluate_feature(crf.features, j, x, predicted_label)
+        trueF = evaluate_feature(crf.features, j, x, true_label)
+        (j, trueF - predictedF)
+    end
+    return crf.w_ + new_weights
+end
+
 function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Labels; test_data::Sentences = [], test_labels::Labels = [])
     # Data and Labels are functions which take a single integer argument in (1,N)
     N = length(data)
@@ -45,11 +79,7 @@ function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Labels; test_d
             x, true_label = data[i], labels[i]
             predicted_label = predict(crf, x)
 	    if predicted_label != true_label
-                for j in 1:J
-                    predictedF = evaluate_feature(crf.features, j, x, predicted_label)
-                    trueF = evaluate_feature(crf.features, j, x, true_label)
-                    crf.w_[j] = crf.w_[j] + trueF - predictedF
-                end
+                crf.w_ = parallel_compute_next_weights(crf, x, true_label, predicted_label)
             end
             if ((i % 5) == 1) && (length(test_data) > 0)
                 # Debugging: should improve after each epoch
