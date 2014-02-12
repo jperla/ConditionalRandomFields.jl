@@ -6,10 +6,7 @@ include("read_data.jl")
 crf = CollinsPerceptronCRF(all_tags, our_features, 1)
 println("num features: ", num_features(crf))
 
-N = size(test_sentences, 1)
-N = 10000
-
-fit!(crf, train_sentences, train_labels, test_data=test_sentences, test_labels=test_labels)
+fit!(crf, train_sentences, train_labels, test_data=test_sentences[1:100], test_labels=test_labels[1:100])
 
 top_features(crf.features, crf.w_, n=20)
 
