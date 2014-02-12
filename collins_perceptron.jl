@@ -41,7 +41,7 @@ function parallel_compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x
     end
     # First case, merge two sparse updates by making a new array
     function sparse_merge(a, b)
-        z = zeros(Float64, J)
+        z = zeros(Float64, (J,))
         z[a[1]] = a[2]
         z[b[1]] = b[2]
         z

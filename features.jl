@@ -42,7 +42,7 @@ function is_tag{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt::Tag, yt_befor
 end
 
 function last_tag_is{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
-  return boolianize(yt == tag && i == length(x))
+  return booleanize(yt == tag && i == length(x))
 end
 
 function tags_are{T <: String}(tags::(Tag,Tag), i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
