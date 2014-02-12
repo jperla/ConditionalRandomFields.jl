@@ -78,7 +78,7 @@ two_tag_template = FeatureTemplate("tags are %s", tags_are, two_tags)
 
 # All of our features in one convenient object
 our_a_templates = [dictionary_template, is_last_word_template, word_ends_with_template, first_word_is_template, one_template]
-our_b_templates = [one_tag_template, two_tag_template]
+our_b_templates = [one_tag_template, two_tag_template, last_tag_template]
 our_templatized_features = TemplatizedFeatures(our_a_templates, our_b_templates)
 our_features = build_features(our_templatized_features)
 
