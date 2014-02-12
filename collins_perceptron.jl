@@ -1,5 +1,5 @@
 include("crflib.jl")
-include("inference.jl")
+include("viterbi.jl")
 
 import Logging: info, INFO
 Logging.configure(level=INFO)
