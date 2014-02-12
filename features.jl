@@ -25,7 +25,7 @@ function is_n_to_last_word{T <: String}(j::Int, i::Index, x::Vector{T})
 end
 
 function first_word_is{T <: String}(word::T, i::Index, x::Vector{T})
-    return (i == 1 || i == 2) && (lowercase(x[1]) == word)
+    return (i == 1) && (lowercase(x[1]) == word)
 end
 
 function word_ends_with{T <: String}(suffix::T, i::Index, x::Vector{T})
