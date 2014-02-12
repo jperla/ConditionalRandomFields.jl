@@ -1,34 +1,5 @@
 require("tags.jl")
 
-training_sentences = readdlm("punctuationDataset/trainingSentences.txt", ' ');
-training_labels = readdlm("punctuationDataset/trainingLabels.txt", ' ');
-
-test_sentences = readdlm("punctuationDataset/testSentences.txt", ' ');
-test_labels = readdlm("punctuationDataset/testLabels.txt", ' ');
-
-function truncate_empty_words_at_end(array_of_words)
-    # Sentences in 2d array have extraneous empty characters at end.
-    truncated = UTF8String[]
-    for word in array_of_words
-        if length(word) > 0
-            push!(truncated, word)
-        else
-            break
-        end
-    end
-    return truncated
-end
-
-function training_sentence(i::Int)
-    # Returns the ith training sentence
-    return truncate_empty_words_at_end(training_sentences[i,:])
-end
-
-function test_sentence(i::Int)
-    # Returns the ith test sentence
-    return truncate_empty_words_at_end(test_sentences[i,:])
-end
-
 function convert_tags{T <: String}(tag_words::Array{T})
     tags = Tag[]
     for tag in tag_words
@@ -51,10 +22,39 @@ function convert_tags{T <: String}(tag_words::Array{T})
     return tags
 end
 
-function training_label(i::Int)
-  return convert_tags(truncate_empty_words_at_end(training_labels[i,:]))
+function truncate_empty_words_at_end(array_of_words)
+    # Sentences in 2d array have extraneous empty characters at end.
+    truncated = UTF8String[]
+    for word in array_of_words
+        if length(word) > 0
+            push!(truncated, word)
+        else
+            break
+        end
+    end
+    return truncated
 end
 
-function test_label(i::Int)
-  return convert_tags(truncate_empty_words_at_end(test_labels[i,:]))
+function sentences(s::Array{Any, 2})
+    all_sentences = Array(Array{UTF8String, 1}, 0)
+    for i in 1:(size(s, 1) - 1)
+        t = truncate_empty_words_at_end(s[i,:])
+        push!(all_sentences, t)
+    end
+    return all_sentences
 end
+
+function labels(s::Array{Any, 2})
+    all_labels = Array(Array{Tag, 1}, 0)
+    for i in 1:(size(s, 1) - 1)
+        t = convert_tags(truncate_empty_words_at_end(s[i,:]))
+        push!(all_labels, t)
+    end
+    return all_labels
+end
+
+train_sentences = sentences(readdlm("punctuationDataset/trainingSentences.txt", ' '))
+test_sentences = sentences(readdlm("punctuationDataset/testSentences.txt", ' '))
+
+train_labels = labels(readdlm("punctuationDataset/trainingLabels.txt", ' '))
+test_labels = labels(readdlm("punctuationDataset/testLabels.txt", ' '))

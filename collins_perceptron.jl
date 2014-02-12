@@ -31,8 +31,9 @@ function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector
     return predicted_label
 end
 
-function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::Int; test_data::Function = zeros, test_labels::Function = zeros, test_N = 0)
+function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Tags; test_data::Sentences = [], test_labels::Tags = [])
     # Data and Labels are functions which take a single integer argument in (1,N)
+    N = length(data)
     J = num_features(crf)
     crf.w_ = zeros(J) # re-initialize to 0 for every fit
 
@@ -41,7 +42,7 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
 	    if (i % 10) == 1
                 info("example $i")
             end
-            x, true_label = data(i), labels(i)
+            x, true_label = data[i], labels[i]
             predicted_label = predict(crf, x)
 	    if predicted_label != true_label
                 for j in 1:J
@@ -50,10 +51,10 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
                     crf.w_[j] = crf.w_[j] + trueF - predictedF
                 end
             end
-            if ((i % 5) == 1) && (test_N > 0)
+            if ((i % 5) == 1) && (length(test_data) > 0)
                 # Debugging: should improve after each epoch
                 #n = num_correct_labels(crf, data, labels, N)
-                t = percent_correct_tags(crf, test_data, test_labels, test_N)
+                t = percent_correct_tags(crf, test_data, test_labels)
 
                 info("epoch $iter, i=$i: percent correct tags: $t")
                 top_features(crf.features, crf.w_, n=10)
