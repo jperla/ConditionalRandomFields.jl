@@ -72,7 +72,7 @@ function evaluate_feature{T <: String}(features::Features, feature_j::Index, x::
     # Calculates Feature_j over a whole sentence
     assert(length(x) == length(y))
     sum = 0
-    for i in 1:(length(x) - 1)
+    for i in 1:length(x)
         if i == 1
             y_before = START
         else
