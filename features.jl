@@ -27,6 +27,10 @@ function word_ends_with{T <: String}(suffix::T, i::Index, x::Vector{T})
     return (endswith(x[i], suffix))
 end
 
+function one{T <: String}(none, i::Index, x::Vector{T})
+    return 1.0
+end
+
 function is_tag{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
   # Every possible tag at this position
   return booleanize(yt == tag)
@@ -43,6 +47,7 @@ word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 
 dictionary_template = FeatureTemplate("word is \"%s\"", is_word, UTF8String["Graham", "Bill"])
 first_word_is_template = FeatureTemplate("first word is %s", first_word_is, UTF8String["what", "who", "when", "where", "how"])
 word_ends_with_template = FeatureTemplate("word ends with %s", word_ends_with, UTF8String["ly", "ing"])
+one_template = FeatureTemplate("one", one, [1])
 
 one_tag_template = FeatureTemplate("tag is %s", is_tag, all_tags)
 
@@ -56,8 +61,8 @@ end
 two_tag_template = FeatureTemplate("tags are %s", tags_are, two_tags)
 
 # All of our features in one convenient object
-our_a_templates = [dictionary_template, is_last_word_template, word_ends_with_template, first_word_is_template]
-our_b_templates = [one_tag_template, ]
+our_a_templates = [dictionary_template, is_last_word_template, word_ends_with_template, first_word_is_template, one_template]
+our_b_templates = [one_tag_template, two_tag_template]
 our_templatized_features = TemplatizedFeatures(our_a_templates, our_b_templates)
 our_features = build_features(our_templatized_features)
 

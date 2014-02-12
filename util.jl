@@ -25,3 +25,7 @@ end
 function show(a::Index)
     return string(a)
 end
+
+function show(a::(Any, Any))
+    return string(show(a[1]), " and ", show(a[2]))
+end
