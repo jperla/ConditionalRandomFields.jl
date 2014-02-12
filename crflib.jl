@@ -1,14 +1,14 @@
 require("featurelib.jl")
 
 typealias Sentences Array{Array{UTF8String, 1}, 1}
-typealias Tags Array{Array{Tag, 1}, 1}
+typealias Labels Array{Array{Tag, 1}, 1}
 
 typealias Weight Float64 # weights for each of the features
 
 abstract Classifier
 abstract ConditionalRandomFieldClassifier <: Classifier
 
-function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Tags)
+function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Labels)
     # Calculate the number of sentences the CRF correctly labels
     n = 0
     for i in 1:N
@@ -21,7 +21,7 @@ function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Sentenc
     return n
 end
 
-function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Tags)
+function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Labels)
     # Calculate the number of sentences the CRF correctly labels
     correct_tags = 0
     total_tags = 0

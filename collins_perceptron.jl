@@ -31,7 +31,7 @@ function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector
     return predicted_label
 end
 
-function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Tags; test_data::Sentences = [], test_labels::Tags = [])
+function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Labels; test_data::Sentences = [], test_labels::Labels = [])
     # Data and Labels are functions which take a single integer argument in (1,N)
     N = length(data)
     J = num_features(crf)
