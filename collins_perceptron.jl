@@ -35,13 +35,17 @@ function parallel_compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x
     J = num_features(crf)
 
     # Normal case, add the sparse part to the array
-    function sparse_merge(z::Array{Float64}, a)
+    function sparse_merge(z::Array{Float64}, a::(Int, Float64))
         z[a[1]] = a[2]
         z
     end
+    # Merging two lists case
+    function sparse_merge(z1::Array{Float64}, z2::Array{Float64})
+        z1 + z2
+    end
     # First case, merge two sparse updates by making a new array
-    function sparse_merge(a, b)
-        z = zeros(Float64, (J,))
+    function sparse_merge(a::(Int, Float64), b::(Int, Float64))
+        z = zeros(Float64, J)
         z[a[1]] = a[2]
         z[b[1]] = b[2]
         z
