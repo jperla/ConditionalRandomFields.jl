@@ -27,7 +27,7 @@ function num_features(crf::CollinsPerceptronCRF)
 end
 
 function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector{T})
-    predicted_label = predict_label(classifier.w_, classifier.features, sentence, crf.tags)
+    predicted_label = predict_label(classifier.w_, classifier.features, sentence, classifier.tags)
     return predicted_label
 end
 

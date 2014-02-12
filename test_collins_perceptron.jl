@@ -1,7 +1,7 @@
 using Base.Test
-include("collins_perceptron.jl")
-include("features.jl")
-include("read_data.jl")
+require("collins_perceptron.jl")
+require("features.jl")
+require("read_data.jl")
 
 crf = CollinsPerceptronCRF(all_tags, some_features, 1)
 println("num features: ", num_features(crf))
