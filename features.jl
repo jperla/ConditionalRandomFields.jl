@@ -10,6 +10,11 @@ function word_length{T <: String}(len::Int, i::Index, x::Vector{T})
   return booleanize(length(x[i]) == len)
 end
 
+function sentence_length{T <: String}(len::Int, i::Index, x::Vector{T})
+  # Matches on specific word lengths
+  return booleanize(length(x) == len)
+end
+
 function is_word{T <: String}(word::T, i::Index, x::Vector{T})
   # Is a specific word at position i?
   return booleanize(lowercase(x[i]) == lowercase(word))
@@ -45,10 +50,11 @@ end
 
 dictionary = UTF8String["Graham", "Bill"]
 
+sentence_length_template = FeatureTemplate("Sentence length is %s", sentence_length, [1:15])
 is_last_word_template = FeatureTemplate("%s to last word", is_n_to_last_word, [0, 1, 2])
 word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
 dictionary_template = FeatureTemplate("word is \"%s\"", is_word, dictionary)
-first_word_is_template = FeatureTemplate("first word is %s", first_word_is, UTF8String["what", "who", "when", "where", "how"])
+first_word_is_template = FeatureTemplate("first word is %s", first_word_is, UTF8String["what", "who", "when", "where", "how", "can", "did", "are", "should", "could", "which", "if", "do", "will"])
 word_ends_with_template = FeatureTemplate("word ends with %s", word_ends_with, UTF8String["ly", "ing"])
 one_template = FeatureTemplate("one", one, [1])
 
