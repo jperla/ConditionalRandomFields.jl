@@ -45,11 +45,12 @@ end
 function parallel_compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x::Array{T}, true_label::Array{Tag}, predicted_label::Array{Tag})
     J = num_features(crf)
 
+    # Normal case, add the sparse part to the array
     function sparse_merge(z::Array{Float64}, a)
         z[a[1]] = a[2]
         z
     end
-
+    # First case, merge two sparse updates by making a new array
     function sparse_merge(a, b)
         z = zeros(Float64, J)
         z[a[1]] = a[2]
