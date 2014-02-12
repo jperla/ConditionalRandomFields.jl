@@ -68,14 +68,17 @@ function evaluate_feature{T <: String}(features::Features, feature_j::Index, i::
   return (a * b)
 end
 
-function evaluate_feature{T <: String}(features::Features, feature_j::Index, x_no_start::Vector{T}, y_no_start::Vector{Tag})
+function evaluate_feature{T <: String}(features::Features, feature_j::Index, x::Vector{T}, y::Vector{Tag})
     # Calculates Feature_j over a whole sentence
-    x = vcat(T[""], x_no_start)
-    y::Vector{Tag} = vcat(Tag[START], y_no_start)
     assert(length(x) == length(y))
     sum = 0
-    for i in 2:length(x)
-        sum += evaluate_feature(features, feature_j, i, x, y[i], y[i-1])
+    for i in 1:(length(x) - 1)
+        if i == 1
+            y_before = START
+        else
+            y_before = y[i-1]
+        end
+        sum += evaluate_feature(features, feature_j, i, x, y[i], y_before)
     end
     return sum
 end
