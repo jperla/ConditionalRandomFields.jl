@@ -85,10 +85,10 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
       debug("max_score: $max")
       s_lookup[k, v] = max
       
-      println("score_lookup")
-      println("$s_lookup")
-      println("previous_tag")
-      print("$previous_tags")
+      # println("score_lookup")
+      # println("$s_lookup")
+      # println("previous_tag")
+      # print("$previous_tags")
       debug("tag before: $prev_tag")
     end
   end
