@@ -25,7 +25,7 @@ function is_n_to_last_word{T <: String}(j::Int, i::Index, x::Vector{T})
 end
 
 function first_word_is{T <: String}(word::T, i::Index, x::Vector{T})
-    return (i == 1) && (lowercase(x[1]) == word)
+    return (lowercase(x[1]) == word) 
 end
 
 function word_ends_with{T <: String}(suffix::T, i::Index, x::Vector{T})
@@ -41,6 +41,10 @@ function is_tag{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt::Tag, yt_befor
   return booleanize(yt == tag)
 end
 
+function last_tag_is{T <: String}(tag::Tag, i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
+  return boolianize(yt == tag && i == length(x))
+end
+
 function tags_are{T <: String}(tags::(Tag,Tag), i::Index, x::Vector{T}, yt::Tag, yt_before::Tag)
   # Every possible tag at this position
   return booleanize(yt == tags[1] && yt_before == tags[2])
@@ -51,6 +55,7 @@ end
 dictionary = UTF8String["Graham", "Bill"]
 
 
+last_tag_template = FeatureTemplate("last tag is %s", last_tag_is, all_tags)
 sentence_length_template = FeatureTemplate("Sentence length is %s", sentence_length, [1:15])
 is_last_word_template = FeatureTemplate("%s to last word", is_n_to_last_word, [0, 1, 2])
 word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
