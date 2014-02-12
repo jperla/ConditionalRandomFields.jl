@@ -1,4 +1,4 @@
-include("tags.jl")
+require("tags.jl")
 
 training_sentences = readdlm("punctuationDataset/trainingSentences.txt", ' ');
 training_labels = readdlm("punctuationDataset/trainingLabels.txt", ' ');

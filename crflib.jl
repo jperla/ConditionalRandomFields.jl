@@ -1,4 +1,4 @@
-include("featurelib.jl")
+require("featurelib.jl")
 
 typealias Weight Float64 # weights for each of the features
 

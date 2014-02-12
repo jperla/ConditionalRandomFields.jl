@@ -1,4 +1,4 @@
-include("taglib.jl")
+require("taglib.jl")
 
 SPACE = convert(Tag, 78)
 COMMA = convert(Tag, 20)

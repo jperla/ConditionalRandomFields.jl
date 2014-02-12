@@ -1,5 +1,5 @@
 using Base.Test
-include("features.jl")
+require("features.jl")
 
 test_sentence = [ "Bill", "Graham", "is", "dead"]
 test_tags = Tag[SPACE, SPACE, SPACE, PERIOD]

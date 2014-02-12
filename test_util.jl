@@ -1,5 +1,5 @@
 using Base.Test
-include("util.jl")
+require("util.jl")
 
 test_sentence = ["Bill", "Graham", "is", "alive"]
 utf8_sentence = [utf8("Bill"), utf8("Graham"), utf8("is"), utf8("alive")]

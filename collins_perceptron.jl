@@ -1,5 +1,5 @@
-include("crflib.jl")
-include("viterbi.jl")
+require("crflib.jl")
+require("viterbi.jl")
 
 import Logging: info, INFO
 Logging.configure(level=INFO)

@@ -1,6 +1,6 @@
-include("features.jl")
-include("crflib.jl")
-include("tags.jl")
+require("features.jl")
+require("crflib.jl")
+require("tags.jl")
 
 import Logging: info, debug, INFO
 Logging.configure(level=INFO)
