@@ -18,17 +18,15 @@ function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Functio
     return n
 end
 
-function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Function, labels::Function, N::Int, tags::Array{Tag})
+function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Function, labels::Function, N::Int)
     # Calculate the number of sentences the CRF correctly labels
     correct_tags = 0
     total_tags = 0
     for i in 1:N
         x, true_label = data(i), labels(i)
-        predicted_label = predict(crf, x, tags)
-
+        predicted_label = predict(crf, x)
         label_length = length(true_label)
         for k = 1:label_length
-
             if true_label[k] == predicted_label[k]
               correct_tags += 1
             end
@@ -36,7 +34,6 @@ function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Funct
         end
     end
     return correct_tags / total_tags
-
 end
 
 function top_features(features::Features, weights::Vector{Weight}; n::Int=10)

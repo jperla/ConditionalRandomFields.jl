@@ -12,6 +12,7 @@ Logging.configure(level=INFO)
 
 type CollinsPerceptronCRF <: ConditionalRandomFieldClassifier
     # input parameters:
+    tags::Vector{Tag}
     features::Features
     n_iter::Int
     # calculated parameters:
@@ -19,18 +20,18 @@ type CollinsPerceptronCRF <: ConditionalRandomFieldClassifier
 end
 
 # Defaults to w_ vector filled with num_features 0s
-CollinsPerceptronCRF(f::Features, n::Int) = CollinsPerceptronCRF(f, n, zeros(num_features(f)))
+CollinsPerceptronCRF(tags::Vector{Tag}, f::Features, n::Int) = CollinsPerceptronCRF(tags, f, n, zeros(num_features(f)))
 
 function num_features(crf::CollinsPerceptronCRF)
     return num_features(crf.features)
 end
 
-function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector{T}, tags::Array{Tag})
-    predicted_label = predict_label(classifier.w_, classifier.features, sentence, tags)
+function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector{T})
+    predicted_label = predict_label(classifier.w_, classifier.features, sentence, crf.tags)
     return predicted_label
 end
 
-function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::Int, tags::Array{Tag}; test_data::Function = zeros, test_labels::Function = zeros, test_N = 0)
+function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::Int; test_data::Function = zeros, test_labels::Function = zeros, test_N = 0)
     # Data and Labels are functions which take a single integer argument in (1,N)
     J = num_features(crf)
     crf.w_ = zeros(J) # re-initialize to 0 for every fit
@@ -41,7 +42,7 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
                 info("example $i")
             end
             x, true_label = data(i), labels(i)
-            predicted_label = predict(crf, x, tags)
+            predicted_label = predict(crf, x)
 	    if predicted_label != true_label
                 for j in 1:J
                     predictedF = evaluate_feature(crf.features, j, x, predicted_label)
@@ -51,8 +52,8 @@ function fit!(crf::CollinsPerceptronCRF, data::Function, labels::Function, N::In
             end
             if ((i % 5) == 1) && (test_N > 0)
                 # Debugging: should improve after each epoch
-                #n = num_correct_labels(crf, data, labels, N, tags)
-                t = percent_correct_tags(crf, test_data, test_labels, test_N, tags)
+                #n = num_correct_labels(crf, data, labels, N)
+                t = percent_correct_tags(crf, test_data, test_labels, test_N)
 
                 info("epoch $iter, i=$i: percent correct tags: $t")
                 top_features(crf.features, crf.w_, n=10)
