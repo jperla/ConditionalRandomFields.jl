@@ -31,17 +31,6 @@ function predict{T <: String}(classifier::CollinsPerceptronCRF, sentence::Vector
     return predicted_label
 end
 
-function compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x::Array{T}, true_label::Array{Tag}, predicted_label::Array{Tag})
-    J = num_features(crf)
-    new_weights = zeros(J)
-    for j in 1:J
-        predictedF = evaluate_feature(crf.features, j, x, predicted_label)
-        trueF = evaluate_feature(crf.features, j, x, true_label)
-        new_weights[j] = trueF - predictedF
-    end
-    return crf.w_ + new_weights
-end
-
 function parallel_compute_next_weights{T <: String}(crf::CollinsPerceptronCRF, x::Array{T}, true_label::Array{Tag}, predicted_label::Array{Tag})
     J = num_features(crf)
 
@@ -74,12 +63,12 @@ function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Labels; test_d
 
     for iter in 1:crf.n_iter
         for i in 1:N
-	    if (i % 10) == 1
+	          if (i % 10) == 1
                 info("example $i")
             end
             x, true_label = data[i], labels[i]
             predicted_label = predict(crf, x)
-	    if predicted_label != true_label
+	          if predicted_label != true_label
                 crf.w_ = parallel_compute_next_weights(crf, x, true_label, predicted_label)
             end
             if ((i % 5) == 1) && (length(test_data) > 0)
