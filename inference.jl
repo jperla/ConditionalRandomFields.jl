@@ -11,15 +11,15 @@ Logging.configure(level=INFO)
 
 function best_label(last_index::Int, previous_tags::Array{Int, 2}, input_tags::Array{Tag})
   tag_index = indices(input_tags)
-  #debug code
-  info("previous tags: $previous_tags")
+
+  debug("previous tags: $previous_tags")
 
   (n, m) = size(previous_tags)
 
   result = Tag[input_tags[last_index]]
   # prepend!(result, [last_tag])
 
-  info("n: $n, m: $m")
+  debug("n: $n, m: $m")
 
   for i = n:-1:2
 
@@ -42,7 +42,7 @@ function best_last_tag(s_lookup::Array{Float64,2})
       best_last = i
     end
   end
-  info("best last: $best_last")
+  debug("best last: $best_last")
   return best_last
 end
 
@@ -90,7 +90,7 @@ function predict_label{T <: String}(weights::Array{Weight}, features::Features, 
 
   last_index = best_last_tag(s_lookup)
   best = best_label(last_index, previous_tags, input_tags)
-  info("best length: $(length(best))  input: $(length(x)) n: $n") 
+  debug("best length: $(length(best))  input: $(length(x)) n: $n") 
   return best
 end
 
