@@ -30,6 +30,20 @@ function show(a::(Any, Any))
     return string(show(a[1]), " and ", show(a[2]))
 end
 
+function sample{T <: Number}(numerators::Array{T})
+    # Accepts a few numerators of probabilities, and then chooses
+    # randomly from the probabilities
+    s = sum(numerators)
+    value = (rand() * s)
+    for i in 1:length(numerators)
+        value -= numerators[i]
+        if value <= 0.0
+            return i
+        end
+    end
+    return 0
+end
+
 ################################################################
 # Reduce method for turning sparse vectors into dense vector
 # during parallelization (julia @parallelize)

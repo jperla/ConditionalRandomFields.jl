@@ -31,27 +31,44 @@ function score{T <: String}(crf, x::Array{T}, label::Array{Tag})
     return s
 end
 
-function gibbs{T <: String}(crf::ContrastiveDivergenceCRF, x::Array{T}, start_label::Array{Tag})
+function gibbs{T <: String}(crf::ContrastiveDivergenceCRF, x::Array{T}, start_label::Array{Tag}; samples::Int = 1)
     n = length(x)
     m = length(crf.tags)
 
     label = deepcopy(start_label)
 
-    # for each position pick best label[i] conditioned on other labels
-    for i in 1:n
-        temp_label = label
-        best_score = -1000000
-        for j=1:m
-            temp_label[i] = crf.tags[j]
-      
-            new_score = score(crf, x, temp_label)
-      
-            if new_score >= best_score
-                best_score = new_score
-                label[i] = crf.tags[j]
+    for s in samples
+        # for each position pick best label[i] conditioned on other labels
+        for i in 1:n
+            numerators = zeros(Float64, m)
+            for j=1:m
+#function g_function{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
+                if i == 1
+                    yt_before = START
+                else
+                    yt_before = label[i-1]
+                end
+
+                yt = crf.tags[j]
+                g_i = g_function(crf.w_, crf.features, i, x, yt, yt_before)
+
+                if i == n
+                    g_iplusone = 0
+                else
+                    yt_after = label[i+1]
+                    g_iplusone = g_function(crf.w_, crf.features, i+1, x, yt_after, yt)
+                end
+
+                numerators[j] = e^(g_i) * e^(g_iplusone)
             end
+
+            debug(string("numerators: ", numerators))
+            sample_tag_index = sample(numerators)
+            label[i] = crf.tags[sample_tag_index]
         end
     end
+
+    debug(string("label: ", label))
     return label
 end
 
