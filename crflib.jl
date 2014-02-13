@@ -29,7 +29,13 @@ function fit!(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::La
 
             if ((i % 10) == 1) && (length(test_data) > 0)
                 metrics = percent_correct_tags(crf, test_data, test_labels)
-
+                if length(ARGS) > 0
+                    f = open(ARGS[1], "a")
+                    d = vcat([string(metrics.correct_tags / metrics.total_tags),
+                         string(metrics.correct_sentences / metrics.total_sentences)], (metrics.correct_each_tag ./ metrics.total_each_tag))
+                    write(f, string(iter, i, N, join(d, ","), "\n")
+                    close(f)
+                end
                 info("epoch $iter, i=$i: percent correct tags: $(metrics.correct_tags / metrics.total_tags)")
                 top_features(crf.features, crf.w_, n=20)
             end
