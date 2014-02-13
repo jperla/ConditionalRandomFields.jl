@@ -9,10 +9,8 @@ println("num features: ", num_features(crf))
 fit!(crf, train_sentences[1:200], train_labels[1:200], test_data=test_sentences[1:100], test_labels=test_labels[1:100])
 
 
-metrics = percent_correct_tags(crf, test_data, test_labels)
+metrics = percent_correct_tags(crf, test_sentences, test_labels)
 info("**FINAL RESULTS** $metrics")
-
-top_features(crf.features, crf.w_, n=20)
 
 top_features(crf.features, crf.w_, n=20)
 

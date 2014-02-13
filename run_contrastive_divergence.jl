@@ -10,7 +10,7 @@ fit!(crf, train_sentences[1:300], train_labels[1:300], test_data=test_sentences[
 
 
 
-metrics = percent_correct_tags(crf, test_data=test_tesentences, test_labels=test_labels)
+metrics = percent_correct_tags(crf, test_sentences, test_labels)
 info("**FINAL RESULTS** $metrics")
 
 
