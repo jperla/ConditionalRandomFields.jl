@@ -42,8 +42,8 @@ function gibbs{T <: String}(crf::ContrastiveDivergenceCRF, x::Array{T}, start_la
         for i in 1:n
             numerators = zeros(Float64, m)
             for j=1:m
-#function g_function{T <: String}(weights::Array{Weight}, features::Features, i::Index, x::Array{T}, yt::Tag, yt_before::Tag)
                 if i == 1
+                    # Special tag when at beginning
                     yt_before = START
                 else
                     yt_before = label[i-1]
@@ -53,6 +53,7 @@ function gibbs{T <: String}(crf::ContrastiveDivergenceCRF, x::Array{T}, start_la
                 g_i = g_function(crf.w_, crf.features, i, x, yt, yt_before)
 
                 if i == n
+                    # When at end of the sentence, the probability is determined by g_i alone
                     g_iplusone = 0
                 else
                     yt_after = label[i+1]
