@@ -3,7 +3,7 @@ require("collins_perceptron.jl")
 require("features.jl")
 require("read_data.jl")
 
-crf = CollinsPerceptronCRF(all_tags, our_features, 5)
+crf = CollinsPerceptronCRF(all_tags, our_features, 2)
 println("num features: ", num_features(crf))
 
 fit!(crf, train_sentences[1:200], train_labels[1:200], test_data=test_sentences[1:200], test_labels=test_labels[1:200])
