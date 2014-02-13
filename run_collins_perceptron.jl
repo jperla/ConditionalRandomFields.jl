@@ -14,7 +14,5 @@ info("**FINAL RESULTS** $metrics")
 
 top_features(crf.features, crf.w_, n=20)
 
-top_features(crf.features, crf.w_, n=20)
-
 @test predict(crf, UTF8String["Bill", "Graham", "is", "dead"]) == [SPACE, SPACE, SPACE, PERIOD]
 
