@@ -50,10 +50,9 @@ function tags_are{T <: String}(tags::(Tag,Tag), i::Index, x::Vector{T}, yt::Tag,
   return booleanize(yt == tags[1] && yt_before == tags[2])
 end
 
-
-
 dictionary = UTF8String["again", "but", "also"]
 
+#big_dictionary = unique_words([train_sentences, test_sentences])
 
 last_tag_template = FeatureTemplate("last tag is %s", last_tag_is, all_tags)
 sentence_length_template = FeatureTemplate("Sentence length is %s", sentence_length, [1:15])
@@ -61,6 +60,7 @@ is_last_word_template = FeatureTemplate("%s to last word", is_n_to_last_word, [0
 word_length_template = FeatureTemplate("word length is %s", word_length, [1, 2, 3, 4, 5, 6, 7, 8])
 dictionary_template = FeatureTemplate("word is \"%s\"", is_word, dictionary)
 first_word_is_template = FeatureTemplate("first word is %s", first_word_is, UTF8String["what", "who", "when", "where", "how", "can", "did", "are", "should", "could", "which", "if", "do", "will"])
+#big_dictionary_template = FeatureTemplate("word is \"%s\"", is_word, big_dictionary)
 
 word_ends_with_template = FeatureTemplate("word ends with %s", word_ends_with, UTF8String["ly", "ing"])
 one_template = FeatureTemplate("one", one, [1])

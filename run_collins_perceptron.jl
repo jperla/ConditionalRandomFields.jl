@@ -6,7 +6,7 @@ require("read_data.jl")
 crf = CollinsPerceptronCRF(all_tags, our_features, 5)
 println("num features: ", num_features(crf))
 
-fit!(crf, train_sentences[1:100], train_labels[1:100], test_data=test_sentences[1:200], test_labels=test_labels[1:200])
+fit!(crf, train_sentences[1:200], train_labels[1:200], test_data=test_sentences[1:200], test_labels=test_labels[1:200])
 
 top_features(crf.features, crf.w_, n=20)
 

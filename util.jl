@@ -10,6 +10,17 @@ function booleanize(b::Bool)
     end
 end
 
+function unique_words{T <: String}(data::{Array{Array{T, 1}, 1}})
+    words = T[]
+    for sentences in data
+        for s in sentences
+            prepend!(words, s)
+        end
+    end
+    unique_set = union!(Set(), words)
+    return T[u for u in unique_set]
+end
+
 function show(a::ASCIIString)
     # Why do i need this? 
     # Otherwise, I get ERROR: no method show(ASCIIString)
