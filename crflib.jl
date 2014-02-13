@@ -59,29 +59,17 @@ type CRFMetrics
     total_tags::Int
     correct_sentences::Int
     total_sentences::Int
-    correct_each_tag::Dict{Tag, Int}
-    total_each_tag::Dict{Tag, Int}
+    correct_each_tag::Array{Int64}
+    total_each_tag::Array{Int64}
 end
 
 function +(a::CRFMetrics, b::CRFMetrics)
     c = CRFMetrics(a.correct_tags + b.correct_tags,
                    a.total_tags + b.total_tags,
                    a.correct_sentences + b.correct_sentences,
-                   a.total_sentences + b.total_sentences, deepcopy(a.correct_each_tag), deepcopy(a.total_each_tag))
-    for (tag, count) in b.correct_each_tag
-  	if haskey(c.correct_each_tag, tag)
-            c.correct_each_tag[tag] += count
-        else
-            c.correct_each_tag[tag] = count
-        end
-    end
-    for (tag, count) in b.total_each_tag
-  	if haskey(c.total_each_tag, tag)
-            c.total_each_tag[tag] += count
-        else
-            c.total_each_tag[tag] = count
-        end
-    end
+                   a.total_sentences + b.total_sentences,
+                   a.correct_each_tag + b.correct_each_tag, 
+                   a.total_each_tag + b.total_each_tag)
     return c
 end
 
@@ -92,11 +80,14 @@ end
 function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Labels)
     # Calculate the number of sentences the CRF correctly labels
 
+    m = length(crf.tags)
+    tag_index = indices(crf.tags)
+
     # (DEBUG flattening)
-    #metrics = CRFMetrics(0, 0, 0, 0, Dict{Tag, Int}(), Dict{Tag, Int}())
+    #metrics = CRFMetrics(0, 0, 0, 0, Int64[0 for i in 1:10], Int64[0 for i in 1:10])
     #for i in 1:length(data) 
     metrics = @parallel (+) for i in 1:length(data) 
-        correct_tags, correct_each_tag, total_each_tag = 0, Dict{Tag, Int}(), Dict{Tag, Int}()
+        correct_tags, correct_each_tag, total_each_tag = 0, Tag[0 for i in 1:m], Tag[0 for i in 1:m]
         x, true_label = data[i], labels[i]
         label_length = length(true_label)
 
@@ -109,17 +100,9 @@ function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Sente
                 correct_tags += 1
 
                 # keep track of tag-level statistics
-                if haskey(correct_each_tag, true_tag)
-                    correct_each_tag[true_tag] += 1
-                else
-                    correct_each_tag[true_tag] = 1
-                end
+                correct_each_tag[tag_index[true_tag]] += 1
             end
-            if haskey(total_each_tag, true_tag)
-                total_each_tag[true_tag] += 1
-            else
-                total_each_tag[true_tag] = 1
-            end
+	    total_each_tag[tag_index[true_tag]] += 1
         end
         correct_sentences = booleanize(predicted_label == true_label) # 1 or 0
         CRFMetrics(correct_tags, label_length, correct_sentences, 1, correct_each_tag, total_each_tag)
@@ -127,8 +110,8 @@ function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Sente
    
     info(metrics)
     #@assert length(data) == length(labels) "lengths must be equal"
-    #@assert (metrics.total_tags == sum(values(metrics.total_each_tag))) "individual tag metrics should add up"
-    #@assert (metrics.correct_tags == sum(values(metrics.correct_each_tag))) "total tags should be equal to the breakdown"
+    #@assert (metrics.total_tags == sum(metrics.total_each_tag)) "individual tag metrics should add up"
+    #@assert (metrics.correct_tags == sum(metrics.correct_each_tag)) "total tags should be equal to the breakdown"
 
     return metrics
 end
