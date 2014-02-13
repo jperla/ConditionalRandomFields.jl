@@ -81,7 +81,7 @@ function fit!(crf::CollinsPerceptronCRF, data::Sentences, labels::Labels; test_d
                 t = percent_correct_tags(crf, test_data, test_labels)
 
                 info("epoch $iter, i=$i: percent correct tags: $t")
-                top_features(crf.features, crf.w_, n=10)
+                top_features(crf.features, crf.w_, n=20)
             end
         end
     end
