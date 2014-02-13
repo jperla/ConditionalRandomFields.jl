@@ -1060,7 +1060,8 @@ Do you actually have the Henwood report
 Just to let you know I am technically in Mike MIller's IPP origination group
 I moved over to this group last week
 I am still going perform the same function as I did in CTG but now from the IPP group
-Here is the model we were just looking at. Again it will be changing
+Here is the model we were just looking at
+Again it will be changing
 Hopefully the following points should answer your questions
 What expiration date are you using i.e
 Are you using the $/MWh VOM dollar amount as your strike

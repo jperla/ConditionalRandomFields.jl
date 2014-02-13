@@ -8,6 +8,39 @@ typealias Weight Float64 # weights for each of the features
 abstract Classifier
 abstract ConditionalRandomFieldClassifier <: Classifier
 
+########################################################
+# Fitting general CRFs with different prediction rules
+########################################################
+
+function fit!(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Labels, next_weights_function::Function; test_data::Sentences = [], test_labels::Labels = [])
+    # Data and Labels are functions which take a single integer argument in (1,N)
+    N = length(data)
+    J = num_features(crf)
+    crf.w_ = zeros(J) # re-initialize to 0 for every fit
+
+    for iter in 1:crf.n_iter
+        for i in 1:N
+            if (i % 10) == 1
+                info("example $i")
+            end
+
+            x, true_label = data[i], labels[i]
+            crf.w_ = next_weights_function(crf, x, true_label)
+
+            if ((i % 5) == 1) && (length(test_data) > 0)
+                t = percent_correct_tags(crf, test_data, test_labels)
+
+                info("epoch $iter, i=$i: percent correct tags: $t")
+                top_features(crf.features, crf.w_, n=20)
+            end
+        end
+    end
+end
+
+##############################################
+# Calculate the error
+##############################################
+
 function num_correct_labels(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::Labels)
     # Calculate the number of sentences the CRF correctly labels
     n = 0
@@ -48,6 +81,10 @@ function percent_correct_tags(crf::ConditionalRandomFieldClassifier, data::Sente
     return total_correct / total_tags
 end
 
+##############################################
+# Debugging the weights / features
+##############################################
+
 function top_features(features::Features, weights::Vector{Weight}; n::Int=10)
     top_weights = sort([(abs(w), w, j) for (j,w) in enumerate(weights)], rev=true)
     for i in 1:n
@@ -55,3 +92,4 @@ function top_features(features::Features, weights::Vector{Weight}; n::Int=10)
         @printf("%s: %s\n", w, show(features, feature_j))
     end
 end
+

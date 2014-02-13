@@ -52,7 +52,7 @@ end
 
 
 
-dictionary = UTF8String["Graham", "Bill"]
+dictionary = UTF8String["again", "but", "also"]
 
 
 last_tag_template = FeatureTemplate("last tag is %s", last_tag_is, all_tags)
