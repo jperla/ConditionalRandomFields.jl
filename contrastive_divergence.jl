@@ -18,7 +18,7 @@ type ContrastiveDivergenceCRF <: ConditionalRandomFieldClassifier
     w_::Vector{Weight}
 end
 
-ContrastiveDivergenceCRF(tags::Vector{Tag}, f::Features, l::Float64, n::Int) = ContrastiveDivergenceCRF(tags, f, n, zeros(num_features(f)))
+ContrastiveDivergenceCRF(tags::Vector{Tag}, f::Features, n::Int) = ContrastiveDivergenceCRF(tags, f, n, zeros(num_features(f)))
 
 function score{T <: String}(crf, x::Array{T}, label::Array{Tag})
     assert(length(crf.w_) == num_features(crf.features))
