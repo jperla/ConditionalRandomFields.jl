@@ -12,7 +12,6 @@ type ContrastiveDivergenceCRF <: ConditionalRandomFieldClassifier
     # input parameters:
     tags::Vector{Tag}
     features::Features
-    lambda::Float64 # learning rate
     n_iter::Int
 
     # calculated parameters:
@@ -81,7 +80,7 @@ function cd_parallel_compute_next_weights{T <: String}(crf::ContrastiveDivergenc
     new_weights = @parallel sparse_merge for j in 1:J
         predictedF = evaluate_feature(crf.features, j, x, predicted_label)
         trueF = evaluate_feature(crf.features, j, x, true_label)
-        (j, crf.lambda * (trueF - predictedF))
+        (j, (trueF - predictedF))
     end
     return crf.w_ + new_weights
 end

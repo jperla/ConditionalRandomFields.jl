@@ -6,7 +6,7 @@ require("read_data.jl")
 crf = ContrastiveDivergenceCRF(all_tags, some_features, 0.1, 3)
 println("num features: ", num_features(crf))
 
-fit!(crf, train_sentences[1:300], train_labels[1:300], test_data=test_sentences[1:1000], test_labels=test_labels[1:1000])
+fit!(crf, train_sentences[1:300], train_labels[1:300], test_data=test_sentences[1:100], test_labels=test_labels[1:100])
 
 top_features(crf.features, crf.w_, n=20)
 

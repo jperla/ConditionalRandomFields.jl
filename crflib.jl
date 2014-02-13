@@ -27,7 +27,7 @@ function fit!(crf::ConditionalRandomFieldClassifier, data::Sentences, labels::La
             x, true_label = data[i], labels[i]
             crf.w_ = next_weights_function(crf, x, true_label)
 
-            if ((i % 5) == 1) && (length(test_data) > 0)
+            if ((i % 10) == 1) && (length(test_data) > 0)
                 metrics = percent_correct_tags(crf, test_data, test_labels)
 
                 info("epoch $iter, i=$i: percent correct tags: $(metrics.correct_tags / metrics.total_tags)")
